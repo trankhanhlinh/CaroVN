@@ -1,28 +1,14 @@
 import React from 'react';
-import Square from './square.js';
+import Square from './square';
 
 class Board extends React.Component {
-  renderSquare(i) {
-    let result = this.props.winningSquares.find(index => {
-      return index === i;
-    });
-
-    return (
-      <Square
-        isWinningSquare={result ? true : false}
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
-      />
-    );
-  }
-
   createBoard = () => {
-    let rows = [];
+    const rows = [];
     let squares;
-    let size = this.props.size;
-    for (let i = 0; i < size; i++) {
+    const { size } = this.props;
+    for (let i = 0; i < size; i += 1) {
       squares = [];
-      for (let j = i * size; j < size + i * size; j++) {
+      for (let j = i * size; j < size + i * size; j += 1) {
         squares.push(this.renderSquare(j));
       }
 
@@ -31,6 +17,21 @@ class Board extends React.Component {
 
     return rows;
   };
+
+  renderSquare(i) {
+    const { winningSquares, squares, onClick } = this.props;
+    const result = winningSquares.find(index => {
+      return index === i;
+    });
+
+    return (
+      <Square
+        isWinningSquare={!!result}
+        value={squares[i]}
+        onClick={() => onClick(i)}
+      />
+    );
+  }
 
   render() {
     return <div className="board">{this.createBoard()}</div>;
