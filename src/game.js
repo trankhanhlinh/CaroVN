@@ -1,6 +1,6 @@
-import React from "react";
-import "./game.css";
-import Board from "./board.js";
+import React from 'react';
+import './game.css';
+import Board from './board.js';
 
 class Game extends React.Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class Game extends React.Component {
       return;
     }
 
-    squares[i] = this.state.xIsNext ? "X" : "O";
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([
         {
@@ -51,16 +51,16 @@ class Game extends React.Component {
   }
 
   resetButtonsDefault() {
-    let activeButtons = document.getElementsByClassName("active");
+    let activeButtons = document.getElementsByClassName('active');
 
     if (activeButtons.length > 0) {
-      activeButtons[0].classList.remove("active");
+      activeButtons[0].classList.remove('active');
     }
   }
 
   jumpTo(event, step) {
     this.resetButtonsDefault();
-    event.target.classList.add("active");
+    event.target.classList.add('active');
 
     this.setState({
       stepNumber: step,
@@ -87,13 +87,13 @@ class Game extends React.Component {
       if (move !== replayIndex) {
         const properMove = sortAsc ? move : history.length - 1 - move;
         const desc =
-          "Go to move #" +
+          'Go to move #' +
           properMove +
-          " (" +
+          ' (' +
           parseInt(step.pos / size) +
-          "," +
+          ',' +
           (step.pos % size) +
-          ")";
+          ')';
         return (
           <li key={properMove}>
             <button
@@ -110,9 +110,9 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = "Winner is " + winner.player;
+      status = 'Winner is ' + winner.player;
     } else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
 
     return (
@@ -126,7 +126,7 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <div className="status" style={{ color: winner ? "red" : "#00a3af" }}>
+          <div className="status" style={{ color: winner ? 'red' : '#00a3af' }}>
             {status}
           </div>
           <button
@@ -142,7 +142,7 @@ class Game extends React.Component {
               className="sort-button"
               onClick={() => this.sort()}
             >
-              {sortAsc ? "descending sort" : "ascending sort"}
+              {sortAsc ? 'descending sort' : 'ascending sort'}
             </button>
           ) : null}
           <ol>{moves}</ol>

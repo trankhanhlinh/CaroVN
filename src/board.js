@@ -1,5 +1,5 @@
-import React from "react";
-import Square from "./square.js";
+import React from 'react';
+import Square from './square.js';
 
 class Board extends React.Component {
   renderSquare(i) {
