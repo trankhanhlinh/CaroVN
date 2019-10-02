@@ -20,13 +20,16 @@ class Board extends React.Component {
 
   renderSquare(i) {
     const { winningSquares, squares, onClick } = this.props;
-    const result = winningSquares.find(index => {
-      return index === i;
-    });
+    let result = false;
+    for (let j = 0; j < winningSquares.length; j += 1) {
+      if (winningSquares[j] === i) {
+        result = true;
+      }
+    }
 
     return (
       <Square
-        isWinningSquare={!!result}
+        isWinningSquare={result}
         value={squares[i]}
         onClick={() => onClick(i)}
       />
