@@ -1,5 +1,5 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
+  font: 14px 'Century Gothic', Futura, sans-serif;
   background-color: #eff7fc;
 }
 
@@ -15,7 +15,7 @@ body {
 
 .game-board .board .board-row:after {
   clear: both;
-  content: "";
+  content: '';
   display: table;
 }
 
@@ -75,21 +75,18 @@ body {
   overflow-y: auto;
 }
 
-.game-info ol::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-	background-color: #fafafa;
+.game-info ol::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: #fafafa;
 }
 
-.game-info ol::-webkit-scrollbar
-{
-	width: 5px;
-	background-color: transparent;
+.game-info ol::-webkit-scrollbar {
+  width: 5px;
+  background-color: transparent;
 }
 
-.game-info ol::-webkit-scrollbar-thumb
-{
-	background-color: #83ccd2;
+.game-info ol::-webkit-scrollbar-thumb {
+  background-color: #83ccd2;
 }
 
 .game-info ol li {

@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function Square(props) {
-  const { value, isWinningSquare } = props;
+  const { value, isWinningSquare, onClick } = props;
   return (
     <button
       type="button"
@@ -11,11 +12,21 @@ function Square(props) {
         border: isWinningSquare ? '1px solid #00a3af' : '1px solid #999'
       }}
       className="square"
-      onClick={() => props.onClick()}
+      onClick={() => onClick()}
     >
       {value}
     </button>
   );
 }
+
+Square.propTypes = {
+  value: PropTypes.string,
+  isWinningSquare: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired
+};
+
+Square.defaultProps = {
+  value: null
+};
 
 export default Square;
