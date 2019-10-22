@@ -1,14 +1,16 @@
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import rootReducer from './reducers';
 import './index.css';
-import App from './components/app';
+import App from './containers/app';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>

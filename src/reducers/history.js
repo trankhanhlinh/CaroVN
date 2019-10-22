@@ -1,3 +1,5 @@
+import { ADD_HISTORY } from '../actions';
+
 const history = (
   state = [
     {
@@ -8,7 +10,7 @@ const history = (
   action
 ) => {
   switch (action.type) {
-    case 'ADD_HISTORY':
+    case ADD_HISTORY:
       return action.history.concat([
         {
           squares: action.squares,

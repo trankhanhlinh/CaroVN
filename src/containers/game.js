@@ -363,7 +363,8 @@ const mapStateToProps = state => ({
   history: state.history,
   stepNumber: state.stepNumber,
   xIsNext: state.xIsNext,
-  sortAsc: state.sortAsc
+  sortAsc: state.sortAsc,
+  currentUser: state.users.currentUser
 });
 
 const mapDispatchToProps = dispatch => ({

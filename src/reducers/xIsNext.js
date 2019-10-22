@@ -1,6 +1,8 @@
+import { UPDATE_XISNEXT } from '../actions';
+
 const xIsNext = (state = true, action) => {
   switch (action.type) {
-    case 'UPDATE_XISNEXT':
+    case UPDATE_XISNEXT:
       return action.xIsNext;
     default:
       return state;

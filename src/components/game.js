@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Navbar, Button } from 'react-bootstrap';
 import './game.css';
 import Board from './board';
 
@@ -11,7 +12,8 @@ function Game({
   handleClick,
   jumpTo,
   calculateWinner,
-  sort
+  sort,
+  currentUser
 }) {
   const size = 20;
   const current = history[stepNumber];
@@ -48,32 +50,48 @@ function Game({
   }
 
   return (
-    <div className="game">
-      <div className="game-board">
-        <Board
-          winningSquares={winner ? winner.winningSquares : []}
-          size={size}
-          squares={current.squares}
-          onClick={i => handleClick(i)}
-        />
-      </div>
-      <div className="game-info">
-        <div className="status" style={{ color: winner ? 'red' : '#00a3af' }}>
-          {status}
+    <div>
+      <Navbar sticky="top" bg="dark" variant="dark">
+        <Navbar.Brand href="#home">Navbar with text</Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text>Hello, {currentUser.username}</Navbar.Text>
+          <Button variant="light" size="sm">
+            Logout
+          </Button>
+        </Navbar.Collapse>
+      </Navbar>
+      <div className="game">
+        <div className="game-board">
+          <Board
+            winningSquares={winner ? winner.winningSquares : []}
+            size={size}
+            squares={current.squares}
+            onClick={i => handleClick(i)}
+          />
         </div>
-        <button
-          type="button"
-          className="replay-button"
-          onClick={e => jumpTo(e, 0)}
-        >
-          Replay
-        </button>
-        {history.length > 2 ? (
-          <button type="button" className="sort-button" onClick={() => sort()}>
-            {sortAsc ? 'descending sort' : 'ascending sort'}
+        <div className="game-info">
+          <div className="status" style={{ color: winner ? 'red' : '#00a3af' }}>
+            {status}
+          </div>
+          <button
+            type="button"
+            className="replay-button"
+            onClick={e => jumpTo(e, 0)}
+          >
+            Replay
           </button>
-        ) : null}
-        <ol>{moves}</ol>
+          {history.length > 2 ? (
+            <button
+              type="button"
+              className="sort-button"
+              onClick={() => sort()}
+            >
+              {sortAsc ? 'descending sort' : 'ascending sort'}
+            </button>
+          ) : null}
+          <ol>{moves}</ol>
+        </div>
       </div>
     </div>
   );
@@ -89,6 +107,9 @@ Game.propTypes = {
   stepNumber: PropTypes.number.isRequired,
   xIsNext: PropTypes.bool.isRequired,
   sortAsc: PropTypes.bool.isRequired,
+  currentUser: PropTypes.shape({
+    username: PropTypes.string.isRequired
+  }).isRequired,
   handleClick: PropTypes.func.isRequired,
   jumpTo: PropTypes.func.isRequired,
   calculateWinner: PropTypes.func.isRequired,
