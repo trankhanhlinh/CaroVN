@@ -1,18 +1,13 @@
 import { connect } from 'react-redux';
 import Login from '../components/login';
-import { login } from '../actions';
+import { login, authenticate } from '../actions';
 
-let loginUsername = null;
+const mapStateToProps = state => ({
+  loginUser: state.users.currentUser
+});
 
-const mapStateToProps = state => {
-  return {
-    loginUser: !loginUsername
-      ? { isPending: false, username: loginUsername }
-      : state.users[loginUsername]
-  };
-};
-
-const handleOnSubmit = (event, dispatch) => {
+const handleOnSubmit = (event, stateProps, dispatchProps) => {
+  // const { loginUser } = stateProps;
   event.preventDefault();
 
   const form = event.target;
@@ -21,15 +16,29 @@ const handleOnSubmit = (event, dispatch) => {
     PASSWORD: form.elements.password.value
   };
 
-  loginUsername = user.USERNAME;
-  dispatch(login(user));
+  dispatchProps.login(user);
+  // if (loginUser.jwtToken) {
+  //   dispatchProps.authenticate(loginUser.jwtToken);
+  // }
 };
 
 const mapDispatchToProps = dispatch => ({
-  onSubmit: e => handleOnSubmit(e, dispatch)
+  login: user => dispatch(login(user)),
+  authenticate: jwt => dispatch(authenticate(jwt))
 });
+
+const mergeProps = (stateProps, dispatchProps) => {
+  const onSubmit = e => handleOnSubmit(e, stateProps, dispatchProps);
+
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    onSubmit
+  };
+};
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(Login);

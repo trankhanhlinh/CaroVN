@@ -54,9 +54,9 @@ class PrivateRoute extends React.Component {
 
   componentDidMount() {
     const { currentUser, onAuthenticate } = this.props;
-    const jwt = localStorage.getItem('token');
+    const jwt = localStorage.getItem('access_token');
 
-    if (!currentUser) {
+    if (!currentUser.username) {
       onAuthenticate(jwt);
     }
   }
@@ -67,7 +67,7 @@ class PrivateRoute extends React.Component {
     return (
       <Route
         render={({ location }) =>
-          currentUser ? (
+          currentUser.username ? (
             children
           ) : (
             <Redirect

@@ -9,6 +9,16 @@ body {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
 }
 
+.navbar-text {
+  color: #fff;
+  margin-right: 1em;
+  font-size: 1.1em;
+}
+
+.navbar-btn {
+  font-size: 1em;
+}
+
 .game {
   margin: 3em;
   display: flex;

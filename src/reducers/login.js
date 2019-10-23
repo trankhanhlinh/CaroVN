@@ -1,42 +1,60 @@
-import { REQUEST_LOGIN, RESPONSE_LOGIN, UPDATE_CUR_USER } from '../actions';
+import {
+  REQUEST_LOGIN,
+  RESPONSE_LOGIN,
+  UPDATE_CUR_USER,
+  LOGOUT
+} from '../actions';
 
 const login = (
   state = {
     isPending: false,
-    username: null
+    username: null,
+    jwtToken: null
   },
   action
 ) => {
   switch (action.type) {
     case REQUEST_LOGIN:
-      return { ...state, isPending: true, username: action.username };
+      return { ...state, isPending: true };
     case RESPONSE_LOGIN:
+      return { ...state, jwtToken: action.jwtToken };
+    case UPDATE_CUR_USER:
       return {
         ...state,
         isPending: false,
         username: action.username,
-        jwtToken: action.jwtToken,
-        lastExecuted: action.receivedAt
+        id: action.id
       };
     default:
       return state;
   }
 };
 
-const users = (state = { currentUser: null }, action) => {
+const users = (
+  state = {
+    currentUser: {
+      isPending: false,
+      username: null,
+      jwtToken: null
+    }
+  },
+  action
+) => {
   switch (action.type) {
     case REQUEST_LOGIN:
     case RESPONSE_LOGIN:
-      return {
-        ...state,
-        [action.username]: login(state[action.username], action)
-      };
     case UPDATE_CUR_USER:
       return {
         ...state,
+        currentUser: login(state.currentUser, action)
+      };
+    case LOGOUT:
+      return {
+        ...state,
         currentUser: {
-          username: action.username,
-          id: action.id
+          isPending: false,
+          username: null,
+          jwtToken: null
         }
       };
     default:

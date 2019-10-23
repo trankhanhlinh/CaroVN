@@ -1,16 +1,16 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import Loading from './loadingIcon/loading';
 import './form.css';
 
 export default function Login({ loginUser, onSubmit }) {
-  if (loginUser.username && !loginUser.isPending) {
+  if (loginUser.username) {
     return <Redirect to="/home" />;
   }
   return (
     <Form className="basic-form" onSubmit={e => onSubmit(e)}>
-      {loginUser.username && loginUser.isPending && <Loading />}
+      {loginUser.isPending && <Loading />}
       <Form.Group controlId="formBasicEmail">
         <Form.Label>Username</Form.Label>
         <Form.Control
@@ -30,6 +30,11 @@ export default function Login({ loginUser, onSubmit }) {
           required
         />
       </Form.Group>
+
+      <Form.Group controlId="formBasicLink">
+        <Link to="/register">Do not have an account? Register</Link>
+      </Form.Group>
+
       <Button variant="primary" type="submit">
         Login
       </Button>

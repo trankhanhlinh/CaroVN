@@ -10,6 +10,7 @@ export const REGISTER_USERNAME = 'REGISTER_USERNAME';
 export const REQUEST_LOGIN = 'REQUEST_LOGIN';
 export const RESPONSE_LOGIN = 'RESPONSE_LOGIN';
 export const UPDATE_CUR_USER = 'UPDATE_CUR_USER';
+export const LOGOUT = 'LOGOUT';
 
 export const addHistory = (history, squares, pos) => ({
   type: ADD_HISTORY,
@@ -91,8 +92,24 @@ function responseLogin(username, json) {
   return {
     type: RESPONSE_LOGIN,
     username,
-    jwtToken: json,
-    receivedAt: Date.now()
+    jwtToken: json
+  };
+}
+
+export function authenticate(jwt) {
+  return dispatch => {
+    return fetch('https://restfulapi-passport-jwt.herokuapp.com/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then(response => response.json())
+      .then(json => dispatch(updateCurrentUser(json)))
+      .catch
+      // err =>
+      ();
   };
 }
 
@@ -107,6 +124,8 @@ export function login(user) {
       .then(response => response.json())
       .then(json => {
         dispatch(responseLogin(user.USERNAME, json));
+        dispatch(authenticate(json));
+        localStorage.setItem('access_token', json);
       })
       .catch
       // err =>
@@ -114,18 +133,15 @@ export function login(user) {
   };
 }
 
-export function authenticate(jwt) {
+function requestLogout() {
+  return {
+    type: LOGOUT
+  };
+}
+
+export function logout() {
   return dispatch => {
-    return fetch('https://restfulapi-passport-jwt.herokuapp.com/me', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwt}`
-      }
-    })
-      .then(response => response.json())
-      .then(json => dispatch(updateCurrentUser(json)))
-      .catch
-      // err =>
-      ();
+    localStorage.removeItem('access_token');
+    dispatch(requestLogout());
   };
 }

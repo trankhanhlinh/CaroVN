@@ -13,7 +13,8 @@ function Game({
   jumpTo,
   calculateWinner,
   sort,
-  currentUser
+  currentUser,
+  handleLogout
 }) {
   const size = 20;
   const current = history[stepNumber];
@@ -55,8 +56,15 @@ function Game({
         <Navbar.Brand href="#home">Navbar with text</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
-          <Navbar.Text>Hello, {currentUser.username}</Navbar.Text>
-          <Button variant="light" size="sm">
+          <Navbar.Text className="navbar-text">
+            Hello, {currentUser.username}
+          </Navbar.Text>
+          <Button
+            variant="light"
+            size="sm"
+            className="navbar-btn"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </Navbar.Collapse>
@@ -113,7 +121,8 @@ Game.propTypes = {
   handleClick: PropTypes.func.isRequired,
   jumpTo: PropTypes.func.isRequired,
   calculateWinner: PropTypes.func.isRequired,
-  sort: PropTypes.func.isRequired
+  sort: PropTypes.func.isRequired,
+  handleLogout: PropTypes.func.isRequired
 };
 
 export default Game;

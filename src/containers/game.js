@@ -4,7 +4,8 @@ import {
   addHistory,
   updateStepNumber,
   updateXIsNext,
-  toggleSortAsc
+  toggleSortAsc,
+  logout
 } from '../actions';
 
 const resetButtonsDefault = () => {
@@ -359,6 +360,10 @@ const sorting = (stateProps, dispatchProps) => {
   dispatchProps.toggleSortAsc(!sortAsc);
 };
 
+const onLogout = dispatchProps => {
+  dispatchProps.logout();
+};
+
 const mapStateToProps = state => ({
   history: state.history,
   stepNumber: state.stepNumber,
@@ -372,7 +377,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(addHistory(history, squares, pos)),
   updateStepNumber: stepNumber => dispatch(updateStepNumber(stepNumber)),
   updateXIsNext: xIsNext => dispatch(updateXIsNext(xIsNext)),
-  toggleSortAsc: sortAsc => dispatch(toggleSortAsc(sortAsc))
+  toggleSortAsc: sortAsc => dispatch(toggleSortAsc(sortAsc)),
+  logout: () => dispatch(logout())
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
@@ -382,6 +388,7 @@ const mergeProps = (stateProps, dispatchProps) => {
   const sort = () => sorting(stateProps, dispatchProps);
   const calculateWinner = (squares, curSquareIndex, size) =>
     calculateGameWinner(squares, curSquareIndex, size);
+  const handleLogout = () => onLogout(dispatchProps);
 
   return {
     ...stateProps,
@@ -389,7 +396,8 @@ const mergeProps = (stateProps, dispatchProps) => {
     handleClick,
     jumpTo,
     sort,
-    calculateWinner
+    calculateWinner,
+    handleLogout
   };
 };
 
