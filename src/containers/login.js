@@ -1,13 +1,12 @@
 import { connect } from 'react-redux';
 import Login from '../components/login';
-import { login, authenticate } from '../actions';
+import { login } from '../actions';
 
 const mapStateToProps = state => ({
   loginUser: state.users.currentUser
 });
 
-const handleOnSubmit = (event, stateProps, dispatchProps) => {
-  // const { loginUser } = stateProps;
+const handleOnSubmit = (event, dispatch) => {
   event.preventDefault();
 
   const form = event.target;
@@ -16,29 +15,14 @@ const handleOnSubmit = (event, stateProps, dispatchProps) => {
     PASSWORD: form.elements.password.value
   };
 
-  dispatchProps.login(user);
-  // if (loginUser.jwtToken) {
-  //   dispatchProps.authenticate(loginUser.jwtToken);
-  // }
+  dispatch(login(user));
 };
 
 const mapDispatchToProps = dispatch => ({
-  login: user => dispatch(login(user)),
-  authenticate: jwt => dispatch(authenticate(jwt))
+  onSubmit: e => handleOnSubmit(e, dispatch)
 });
-
-const mergeProps = (stateProps, dispatchProps) => {
-  const onSubmit = e => handleOnSubmit(e, stateProps, dispatchProps);
-
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    onSubmit
-  };
-};
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Login);

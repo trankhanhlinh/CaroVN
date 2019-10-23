@@ -27,15 +27,15 @@ export default function App({ currentUser, onAuthenticate }) {
             <Register />
           </Route>
           <PrivateRoute
+            path="/home"
             currentUser={currentUser}
             onAuthenticate={onAuthenticate}
-            path="/home"
           >
             <Game />
           </PrivateRoute>
-          {/* <Route path="/game">
-            <Game />
-          </Route> */}
+          <Route path="/">
+            <Redirect to="/login" />;
+          </Route>
         </Switch>
       </div>
     </Router>
@@ -47,38 +47,22 @@ export default function App({ currentUser, onAuthenticate }) {
 class PrivateRoute extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      // isAuthenticated: false
-    };
+    this.state = {};
   }
 
   componentDidMount() {
     const { currentUser, onAuthenticate } = this.props;
     const jwt = localStorage.getItem('access_token');
 
-    if (!currentUser.username) {
+    if (!currentUser.username && jwt) {
       onAuthenticate(jwt);
     }
   }
 
   render() {
-    const { currentUser, children } = this.props;
+    const { children } = this.props;
+    const jwt = localStorage.getItem('access_token');
 
-    return (
-      <Route
-        render={({ location }) =>
-          currentUser.username ? (
-            children
-          ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      />
-    );
+    return <Route render={() => (jwt ? children : <Redirect to="/login" />)} />;
   }
 }

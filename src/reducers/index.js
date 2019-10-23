@@ -5,14 +5,24 @@ import stepNumber from './stepNumber';
 import xIsNext from './xIsNext';
 import newUsers from './register';
 import users from './login';
-import registerUsername from './registerUsername';
 
-export default combineReducers({
+const appReducer = combineReducers({
   history,
   sortAsc,
   stepNumber,
   xIsNext,
   newUsers,
-  users,
-  registerUsername
+  users
 });
+
+const rootReducer = (state, action) => {
+  let appState = state;
+  if (action.type === 'LOGOUT') {
+    const { routing } = state;
+    appState = { routing };
+  }
+
+  return appReducer(appState, action);
+};
+
+export default rootReducer;

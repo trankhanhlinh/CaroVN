@@ -35,7 +35,7 @@ export default function Login({ loginUser, onSubmit }) {
         <Link to="/register">Do not have an account? Register</Link>
       </Form.Group>
 
-      <Button variant="primary" type="submit">
+      <Button variant="primary" type="submit" disabled={!!loginUser.isPending}>
         Login
       </Button>
     </Form>

@@ -31,7 +31,11 @@ function Register({ registerUser, onSubmit }) {
           placeholder="Password"
         />
       </Form.Group>
-      <Button variant="primary" type="submit">
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={!!(registerUser.username && registerUser.isPending)}
+      >
         Register
       </Button>
     </Form>

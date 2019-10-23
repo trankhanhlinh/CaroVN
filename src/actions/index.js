@@ -33,13 +33,6 @@ export const toggleSortAsc = () => ({
   type: TOGGLE_SORTASC
 });
 
-// export function registerUsername(username) {
-//   return {
-//     type: REGISTER_USERNAME,
-//     username
-//   };
-// }
-
 function requestRegister(newUser) {
   return {
     type: REQUEST_REGISTER,
@@ -67,8 +60,8 @@ export function register(newUser) {
       }
     )
       .then(response => response.json())
-      .then(() => dispatch(responseRegister(newUser.USERNAME)));
-    // .catch(err => );
+      .then(() => dispatch(responseRegister(newUser.USERNAME)))
+      .catch();
   };
 }
 
@@ -107,9 +100,7 @@ export function authenticate(jwt) {
     })
       .then(response => response.json())
       .then(json => dispatch(updateCurrentUser(json)))
-      .catch
-      // err =>
-      ();
+      .catch();
   };
 }
 
@@ -127,9 +118,7 @@ export function login(user) {
         dispatch(authenticate(json));
         localStorage.setItem('access_token', json);
       })
-      .catch
-      // err =>
-      ();
+      .catch();
   };
 }
 

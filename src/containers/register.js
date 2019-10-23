@@ -22,7 +22,6 @@ const handleOnSubmit = (event, dispatch) => {
   };
 
   registerUsername = newUser.USERNAME;
-  // dispatch(registerUsername(newUser.USERNAME));
   dispatch(register(newUser));
 };
 
