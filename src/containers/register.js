@@ -4,13 +4,12 @@ import { register } from '../actions';
 
 let registerUsername = null;
 
-const mapStateToProps = state => {
-  return {
-    registerUser: !registerUsername
-      ? { isPending: false, username: registerUsername }
-      : state.newUsers[registerUsername]
-  };
-};
+const mapStateToProps = state => ({
+  registerUser: !registerUsername
+    ? { isPending: false, username: null }
+    : state.auth.newUser,
+  errorMessage: state.auth.errorMessage
+});
 
 const handleOnSubmit = (event, dispatch) => {
   event.preventDefault();

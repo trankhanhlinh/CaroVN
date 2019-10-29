@@ -1,12 +1,11 @@
 import { REQUEST_REGISTER, RESPONSE_REGISTER } from '../actions';
 
-const register = (
-  state = {
-    isPending: false,
-    username: null
-  },
-  action
-) => {
+const DEFAULT_STATE = {
+  isPending: false,
+  username: null
+};
+
+const register = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case REQUEST_REGISTER:
       return { ...state, isPending: true, username: action.username };
@@ -14,8 +13,7 @@ const register = (
       return {
         ...state,
         isPending: false,
-        username: action.username,
-        lastExecuted: action.receivedAt
+        username: action.username
       };
     default:
       return state;

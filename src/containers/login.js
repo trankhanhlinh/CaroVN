@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
 import Login from '../components/login';
-import { login } from '../actions';
+import { login, oauthFacebook, oauthGoogle } from '../actions';
 
 const mapStateToProps = state => ({
-  loginUser: state.users.currentUser
+  loginUser: state.auth.currentUser,
+  errorMessage: state.auth.errorMessage
 });
 
 const handleOnSubmit = (event, dispatch) => {
@@ -19,7 +20,9 @@ const handleOnSubmit = (event, dispatch) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onSubmit: e => handleOnSubmit(e, dispatch)
+  onSubmit: e => handleOnSubmit(e, dispatch),
+  oauthFacebook: accessToken => dispatch(oauthFacebook(accessToken)),
+  oauthGoogle: accessToken => dispatch(oauthGoogle(accessToken))
 });
 
 export default connect(

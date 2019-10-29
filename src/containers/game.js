@@ -369,7 +369,7 @@ const mapStateToProps = state => ({
   stepNumber: state.stepNumber,
   xIsNext: state.xIsNext,
   sortAsc: state.sortAsc,
-  currentUser: state.users.currentUser
+  currentUser: state.auth.currentUser
 });
 
 const mapDispatchToProps = dispatch => ({

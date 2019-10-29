@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import Loading from './loadingIcon/loading';
 import './form.css';
 
-function Register({ registerUser, onSubmit }) {
+function Register({ registerUser, errorMessage, onSubmit }) {
   if (registerUser.username && !registerUser.isPending) {
     return <Redirect to="/login" />;
   }
@@ -31,6 +31,9 @@ function Register({ registerUser, onSubmit }) {
           placeholder="Password"
         />
       </Form.Group>
+
+      {errorMessage ? <Alert variant="danger">{errorMessage}</Alert> : null}
+
       <Button
         variant="primary"
         type="submit"

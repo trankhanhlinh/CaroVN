@@ -4,7 +4,7 @@ import { authenticate } from '../actions';
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.currentUser
+    currentUser: state.auth.currentUser
   };
 };
 

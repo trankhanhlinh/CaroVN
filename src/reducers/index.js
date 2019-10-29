@@ -3,16 +3,14 @@ import history from './history';
 import sortAsc from './sortAsc';
 import stepNumber from './stepNumber';
 import xIsNext from './xIsNext';
-import newUsers from './register';
-import users from './login';
+import auth from './auth';
 
 const appReducer = combineReducers({
   history,
   sortAsc,
   stepNumber,
   xIsNext,
-  newUsers,
-  users
+  auth
 });
 
 const rootReducer = (state, action) => {

@@ -4,9 +4,11 @@ export const ADD_HISTORY = 'ADD_HISTORY';
 export const UPDATE_STEPNUMBER = 'UPDATE_STEPNUMBER';
 export const UPDATE_XISNEXT = 'UPDATE_XISNEXT';
 export const TOGGLE_SORTASC = 'TOGGLE_SORTASC';
+export const REGISTER_ERROR = 'REGISTER_ERROR';
 export const REQUEST_REGISTER = 'REQUEST_REGISTER';
 export const RESPONSE_REGISTER = 'RESPONSE_REGISTER';
 export const REGISTER_USERNAME = 'REGISTER_USERNAME';
+export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const REQUEST_LOGIN = 'REQUEST_LOGIN';
 export const RESPONSE_LOGIN = 'RESPONSE_LOGIN';
 export const UPDATE_CUR_USER = 'UPDATE_CUR_USER';
@@ -43,8 +45,7 @@ function requestRegister(newUser) {
 function responseRegister(username) {
   return {
     type: RESPONSE_REGISTER,
-    username,
-    receivedAt: Date.now()
+    username
   };
 }
 
@@ -61,7 +62,12 @@ export function register(newUser) {
     )
       .then(response => response.json())
       .then(() => dispatch(responseRegister(newUser.USERNAME)))
-      .catch();
+      .catch(() => {
+        dispatch({
+          type: REGISTER_ERROR,
+          payload: 'Username already exists. Please try with another one!'
+        });
+      });
   };
 }
 
@@ -81,11 +87,10 @@ function requestLogin(user) {
   };
 }
 
-function responseLogin(username, json) {
+function responseLogin(json) {
   return {
     type: RESPONSE_LOGIN,
-    username,
-    jwtToken: json
+    payload: json.token
   };
 }
 
@@ -94,12 +99,53 @@ export function authenticate(jwt) {
     return fetch('https://restfulapi-passport-jwt.herokuapp.com/me', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`
       }
     })
       .then(response => response.json())
       .then(json => dispatch(updateCurrentUser(json)))
+      .catch();
+  };
+}
+
+export function oauthFacebook(accessToken) {
+  return dispatch => {
+    return fetch(
+      'https://restfulapi-passport-jwt.herokuapp.com/user/oauth/facebook',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: accessToken })
+      }
+    )
+      .then(response => response.json())
+      .then(json => {
+        dispatch(responseLogin(json));
+        dispatch(authenticate(json.token));
+        localStorage.setItem('access_token', json.token);
+      })
+      .catch();
+  };
+}
+
+export function oauthGoogle(accessToken) {
+  return dispatch => {
+    return fetch(
+      'https://restfulapi-passport-jwt.herokuapp.com/user/oauth/google',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: accessToken })
+      }
+    )
+      .then(response => response.json())
+      .then(json => {
+        // console.log('google error ', json);
+        dispatch(responseLogin(json));
+        dispatch(authenticate(json.token));
+        localStorage.setItem('access_token', json.token);
+      })
       .catch();
   };
 }
@@ -114,11 +160,16 @@ export function login(user) {
     })
       .then(response => response.json())
       .then(json => {
-        dispatch(responseLogin(user.USERNAME, json));
-        dispatch(authenticate(json));
-        localStorage.setItem('access_token', json);
+        dispatch(responseLogin(json));
+        dispatch(authenticate(json.token));
+        localStorage.setItem('access_token', json.token);
       })
-      .catch();
+      .catch(err => {
+        dispatch({
+          type: LOGIN_ERROR,
+          payload: err.message
+        });
+      });
   };
 }
 

@@ -10,7 +10,7 @@ import './index.css';
 import App from './containers/app';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+const store = createStore(rootReducer, {}, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>
