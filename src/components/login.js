@@ -19,12 +19,16 @@ export default function Login({
 
   const responseFacebook = response => {
     // console.log('facebook ', response);
-    oauthFacebook(response.accessToken);
+    if (response.status !== 'unknown') {
+      oauthFacebook(response.accessToken);
+    }
   };
 
   const responseGoogle = response => {
     // console.log('google ', response);
-    oauthGoogle(response.accessToken);
+    if (!response.error) {
+      oauthGoogle(response.accessToken);
+    }
   };
 
   return (
@@ -66,15 +70,25 @@ export default function Login({
 
       <FacebookLogin
         appId="528840947905725"
-        autoLoad
         textButton="Facebook"
         fields="name, email, picture"
         callback={responseFacebook}
         cssClass="btn btn-primary"
+        isDisabled={!!loginUser.isPending}
+        render={renderProps => (
+          <Button
+            variant="primary"
+            onClick={renderProps.onClick}
+            isDisabled={renderProps.isDisabled}
+          >
+            Facebook
+          </Button>
+        )}
       />
 
       <GoogleLogin
         clientId="72475427681-3chf7ih6ld8ma5p9h2qruatkr254i1m7.apps.googleusercontent.com"
+        disabled={!!loginUser.isPending}
         render={renderProps => (
           <Button
             variant="danger"

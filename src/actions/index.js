@@ -80,10 +80,9 @@ export function updateCurrentUser(json) {
   };
 }
 
-function requestLogin(user) {
+function requestLogin() {
   return {
-    type: REQUEST_LOGIN,
-    username: user.USERNAME
+    type: REQUEST_LOGIN
   };
 }
 
@@ -111,6 +110,7 @@ export function authenticate(jwt) {
 
 export function oauthFacebook(accessToken) {
   return dispatch => {
+    dispatch(requestLogin());
     return fetch(
       'https://restfulapi-passport-jwt.herokuapp.com/user/oauth/facebook',
       {
@@ -121,9 +121,13 @@ export function oauthFacebook(accessToken) {
     )
       .then(response => response.json())
       .then(json => {
-        dispatch(responseLogin(json));
-        dispatch(authenticate(json.token));
-        localStorage.setItem('access_token', json.token);
+        if (json.token) {
+          dispatch(responseLogin(json));
+          dispatch(authenticate(json.token));
+          localStorage.setItem('access_token', json.token);
+        } else {
+          // console.log('oauth facebook error ', json);
+        }
       })
       .catch();
   };
@@ -131,6 +135,7 @@ export function oauthFacebook(accessToken) {
 
 export function oauthGoogle(accessToken) {
   return dispatch => {
+    dispatch(requestLogin());
     return fetch(
       'https://restfulapi-passport-jwt.herokuapp.com/user/oauth/google',
       {
@@ -141,10 +146,13 @@ export function oauthGoogle(accessToken) {
     )
       .then(response => response.json())
       .then(json => {
-        // console.log('google error ', json);
-        dispatch(responseLogin(json));
-        dispatch(authenticate(json.token));
-        localStorage.setItem('access_token', json.token);
+        if (json.token) {
+          dispatch(responseLogin(json));
+          dispatch(authenticate(json.token));
+          localStorage.setItem('access_token', json.token);
+        } else {
+          // console.log('oauth google error ', json);
+        }
       })
       .catch();
   };
@@ -152,7 +160,7 @@ export function oauthGoogle(accessToken) {
 
 export function login(user) {
   return dispatch => {
-    dispatch(requestLogin(user));
+    dispatch(requestLogin());
     return fetch('https://restfulapi-passport-jwt.herokuapp.com/user/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -160,9 +168,13 @@ export function login(user) {
     })
       .then(response => response.json())
       .then(json => {
-        dispatch(responseLogin(json));
-        dispatch(authenticate(json.token));
-        localStorage.setItem('access_token', json.token);
+        if (json.token) {
+          dispatch(responseLogin(json));
+          dispatch(authenticate(json.token));
+          localStorage.setItem('access_token', json.token);
+        } else {
+          // console.log('oauth local error ', json);
+        }
       })
       .catch(err => {
         dispatch({
