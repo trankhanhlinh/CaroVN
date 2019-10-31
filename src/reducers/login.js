@@ -3,7 +3,7 @@ import {
   RESPONSE_LOGIN,
   UPDATE_CUR_USER,
   LOGOUT
-} from '../actions';
+} from '../actions/type';
 
 const login = (
   state = {

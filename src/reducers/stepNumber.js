@@ -1,4 +1,4 @@
-import { UPDATE_STEPNUMBER } from '../actions';
+import { UPDATE_STEPNUMBER } from '../actions/type';
 
 const stepNumber = (state = 0, action) => {
   switch (action.type) {

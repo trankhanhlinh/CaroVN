@@ -5,7 +5,9 @@ import {
   updateStepNumber,
   updateXIsNext,
   toggleSortAsc,
-  logout
+  logout,
+  selectGameMode,
+  updateIsGameLocked
 } from '../actions';
 
 const resetButtonsDefault = () => {
@@ -321,7 +323,8 @@ const calculateGameWinner = (squares, curSquareIndex, size) => {
 };
 
 const handleClickSquare = (i, stateProps, dispatchProps) => {
-  const { history, stepNumber, xIsNext } = stateProps;
+  const { history, stepNumber, gameMode } = stateProps;
+  let { xIsNext } = stateProps;
   const newHistory = history.slice(0, stepNumber + 1);
   const current = newHistory[newHistory.length - 1];
   const squares = current.squares.slice();
@@ -330,7 +333,7 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
 
   resetButtonsDefault();
 
-  if (squares[i]) {
+  if (gameMode.isLocked || squares[i]) {
     return;
   }
 
@@ -340,10 +343,42 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
   }
 
   squares[i] = xIsNext ? 'X' : 'O';
+  xIsNext = xIsNext !== true;
 
   dispatchProps.addHistory(newHistory, squares, i);
   dispatchProps.updateStepNumber(newHistory.length);
-  dispatchProps.updateXIsNext(!xIsNext);
+  dispatchProps.updateXIsNext(xIsNext);
+
+  // computer's turn
+  if (gameMode.mode === 'computer' && !calculateGameWinner(squares, i, size)) {
+    if (xIsNext === false) {
+      dispatchProps.updateIsGameLocked(true);
+      let random = -1;
+
+      setTimeout(() => {
+        do {
+          random = Math.floor(Math.random() * 400); // 0->399
+        } while (squares[random]);
+        dispatchProps.updateIsGameLocked(false);
+        const updatedState = {
+          history: newHistory.concat([
+            {
+              squares,
+              pos: i
+            }
+          ]),
+          stepNumber: newHistory.length,
+          xIsNext,
+          gameMode: {
+            mode: 'computer',
+            isLocked: false
+          }
+        };
+
+        handleClickSquare(random, updatedState, dispatchProps);
+      }, 1000);
+    }
+  }
 };
 
 const jumpToStep = (event, step, dispatchProps) => {
@@ -364,12 +399,17 @@ const onLogout = dispatchProps => {
   dispatchProps.logout();
 };
 
+const onSelectGameMode = (mode, dispatchProps) => {
+  dispatchProps.selectGameMode(mode);
+};
+
 const mapStateToProps = state => ({
   history: state.history,
   stepNumber: state.stepNumber,
   xIsNext: state.xIsNext,
   sortAsc: state.sortAsc,
-  currentUser: state.auth.currentUser
+  currentUser: state.auth.currentUser,
+  gameMode: state.gameMode
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -378,7 +418,9 @@ const mapDispatchToProps = dispatch => ({
   updateStepNumber: stepNumber => dispatch(updateStepNumber(stepNumber)),
   updateXIsNext: xIsNext => dispatch(updateXIsNext(xIsNext)),
   toggleSortAsc: sortAsc => dispatch(toggleSortAsc(sortAsc)),
-  logout: () => dispatch(logout())
+  logout: () => dispatch(logout()),
+  selectGameMode: mode => dispatch(selectGameMode(mode)),
+  updateIsGameLocked: isLocked => dispatch(updateIsGameLocked(isLocked))
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
@@ -389,6 +431,7 @@ const mergeProps = (stateProps, dispatchProps) => {
   const calculateWinner = (squares, curSquareIndex, size) =>
     calculateGameWinner(squares, curSquareIndex, size);
   const handleLogout = () => onLogout(dispatchProps);
+  const handleSelectGameMode = mode => onSelectGameMode(mode, dispatchProps);
 
   return {
     ...stateProps,
@@ -397,7 +440,8 @@ const mergeProps = (stateProps, dispatchProps) => {
     jumpTo,
     sort,
     calculateWinner,
-    handleLogout
+    handleLogout,
+    handleSelectGameMode
   };
 };
 

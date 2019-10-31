@@ -1,18 +1,30 @@
 import fetch from 'cross-fetch';
+import {
+  SELECT_GAME_MODE,
+  UPDATE_IS_GAME_LOCKED,
+  ADD_HISTORY,
+  UPDATE_STEPNUMBER,
+  UPDATE_XISNEXT,
+  TOGGLE_SORTASC,
+  REGISTER_ERROR,
+  REQUEST_REGISTER,
+  RESPONSE_REGISTER,
+  LOGIN_ERROR,
+  REQUEST_LOGIN,
+  RESPONSE_LOGIN,
+  UPDATE_CUR_USER,
+  LOGOUT
+} from './type';
 
-export const ADD_HISTORY = 'ADD_HISTORY';
-export const UPDATE_STEPNUMBER = 'UPDATE_STEPNUMBER';
-export const UPDATE_XISNEXT = 'UPDATE_XISNEXT';
-export const TOGGLE_SORTASC = 'TOGGLE_SORTASC';
-export const REGISTER_ERROR = 'REGISTER_ERROR';
-export const REQUEST_REGISTER = 'REQUEST_REGISTER';
-export const RESPONSE_REGISTER = 'RESPONSE_REGISTER';
-export const REGISTER_USERNAME = 'REGISTER_USERNAME';
-export const LOGIN_ERROR = 'LOGIN_ERROR';
-export const REQUEST_LOGIN = 'REQUEST_LOGIN';
-export const RESPONSE_LOGIN = 'RESPONSE_LOGIN';
-export const UPDATE_CUR_USER = 'UPDATE_CUR_USER';
-export const LOGOUT = 'LOGOUT';
+export const selectGameMode = mode => ({
+  type: SELECT_GAME_MODE,
+  mode
+});
+
+export const updateIsGameLocked = isLocked => ({
+  type: UPDATE_IS_GAME_LOCKED,
+  isLocked
+});
 
 export const addHistory = (history, squares, pos) => ({
   type: ADD_HISTORY,
@@ -56,18 +68,24 @@ export function register(newUser) {
       'https://restfulapi-passport-jwt.herokuapp.com/user/register',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
         body: `USERNAME=${newUser.USERNAME}&PASSWORD=${newUser.PASSWORD}`
       }
     )
       .then(response => response.json())
-      .then(() => dispatch(responseRegister(newUser.USERNAME)))
-      .catch(() => {
-        dispatch({
-          type: REGISTER_ERROR,
-          payload: 'Username already exists. Please try with another one!'
-        });
-      });
+      .then(json => {
+        if (json.error) {
+          dispatch({
+            type: REGISTER_ERROR,
+            payload: json.error.message
+          });
+        } else {
+          dispatch(responseRegister(newUser.USERNAME));
+        }
+      })
+      .catch();
   };
 }
 
@@ -172,16 +190,14 @@ export function login(user) {
           dispatch(responseLogin(json));
           dispatch(authenticate(json.token));
           localStorage.setItem('access_token', json.token);
-        } else {
-          // console.log('oauth local error ', json);
+        } else if (json.error) {
+          dispatch({
+            type: LOGIN_ERROR,
+            payload: json.error.message
+          });
         }
       })
-      .catch(err => {
-        dispatch({
-          type: LOGIN_ERROR,
-          payload: err.message
-        });
-      });
+      .catch();
   };
 }
 

@@ -3,39 +3,73 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  // Link,
   Redirect
-  // useHistory,
-  // useLocation
 } from 'react-router-dom';
 
 import Login from '../containers/login';
 import Register from '../containers/register';
 import Game from '../containers/game';
+import Home from '../containers/home';
 
 export default function App({ currentUser, onAuthenticate }) {
+  const jwt = localStorage.getItem('access_token');
+
   return (
     <Router>
       <div>
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
+          {jwt ? (
+            <Route path="/login">
+              <Redirect to="/home" />;
+            </Route>
+          ) : (
+            <Route path="/login">
+              <Login />
+            </Route>
+          )}
+          {jwt ? (
+            <Route path="/register">
+              <Redirect to="/home" />;
+            </Route>
+          ) : (
+            <Route path="/register">
+              <Register />
+            </Route>
+          )}
           <PrivateRoute
-            path="/home"
+            path="/game"
             currentUser={currentUser}
             onAuthenticate={onAuthenticate}
           >
             <Game />
           </PrivateRoute>
-          <Route path="/">
+          {/* <Route path="/login">
+            <Login />
+          </Route> */}
+          {/* <Route path="/register">
+            <Register />
+          </Route> */}
+          <PrivateRoute
+            path="/home"
+            currentUser={currentUser}
+            onAuthenticate={onAuthenticate}
+          >
+            <Home />
+          </PrivateRoute>
+          {jwt ? (
+            <Route path="/">
+              <Redirect to="/home" />;
+            </Route>
+          ) : (
+            <Route path="/">
+              <Redirect to="/login" />;
+            </Route>
+          )}
+          {/* <Route path="/">
             <Redirect to="/login" />;
-          </Route>
+          </Route> */}
         </Switch>
       </div>
     </Router>
@@ -60,9 +94,14 @@ class PrivateRoute extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, ...rest } = this.props;
     const jwt = localStorage.getItem('access_token');
 
-    return <Route render={() => (jwt ? children : <Redirect to="/login" />)} />;
+    return (
+      <Route
+        {...rest}
+        render={() => (jwt ? children : <Redirect to="/login" />)}
+      />
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { TOGGLE_SORTASC } from '../actions';
+import { TOGGLE_SORTASC } from '../actions/type';
 
 const sortAsc = (state = true, action) => {
   switch (action.type) {

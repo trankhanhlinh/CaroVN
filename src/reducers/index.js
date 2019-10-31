@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import gameMode from './gameMode';
 import history from './history';
 import sortAsc from './sortAsc';
 import stepNumber from './stepNumber';
@@ -6,6 +7,7 @@ import xIsNext from './xIsNext';
 import auth from './auth';
 
 const appReducer = combineReducers({
+  gameMode,
   history,
   sortAsc,
   stepNumber,

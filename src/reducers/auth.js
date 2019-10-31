@@ -7,7 +7,7 @@ import {
   RESPONSE_LOGIN,
   UPDATE_CUR_USER,
   LOGOUT
-} from '../actions';
+} from '../actions/type';
 
 const DEFAULT_USER_STATE = {
   isPending: false,
@@ -57,41 +57,41 @@ export default (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case REQUEST_REGISTER:
     case RESPONSE_REGISTER:
-      // console.log('[REGISTER] state ', state);
+      console.log('[REGISTER] state ', state);
       return {
         ...state,
         errorMessage: '',
         newUser: register(state.newUser, action)
       };
     case REGISTER_ERROR:
-      // console.log('[REGISTER_ERROR] state ', state);
+      console.log('[REGISTER_ERROR] state ', state);
       return {
         ...state,
         errorMessage: action.payload,
         newUser: register(state.newUser, action)
       };
     case REQUEST_LOGIN:
-      // console.log('[REQUEST_LOGIN] state ', state);
+      console.log('[REQUEST_LOGIN] state ', state);
       return {
         ...state,
         errorMessage: '',
         currentUser: login(state.currentUser, action)
       };
     case RESPONSE_LOGIN:
-      // console.log('[RESPONSE_LOGIN] state ', state);
+      console.log('[RESPONSE_LOGIN] state ', state);
       return { ...state, isAuthenticated: true, token: action.payload };
     case UPDATE_CUR_USER:
       // console.log('[UPDATE_CUR_USER] state ', state);
       return { ...state, currentUser: login(state.currentUser, action) };
     case LOGIN_ERROR:
-      // console.log('[LOGIN_ERROR] state ', state);
+      console.log('[LOGIN_ERROR] state ', state);
       return {
         ...state,
         errorMessage: action.payload,
         currentUser: login(state.currentUser, action)
       };
     case LOGOUT:
-      // console.log('[LOGOUT] state ', state);
+      console.log('[LOGOUT] state ', state);
       return DEFAULT_STATE;
     default:
       return state;

@@ -14,11 +14,13 @@ function Board(props) {
     }
 
     return (
-      <Square
-        isWinningSquare={result}
-        value={squares[i]}
-        onClick={() => onClick(i)}
-      />
+      <span key={i}>
+        <Square
+          isWinningSquare={result}
+          value={squares[i]}
+          onClick={() => onClick(i)}
+        />
+      </span>
     );
   };
 
@@ -31,7 +33,11 @@ function Board(props) {
         mySquares.push(renderSquare(j));
       }
 
-      rows.push(<div className="board-row">{mySquares}</div>);
+      rows.push(
+        <div className="board-row" key={i}>
+          {mySquares}
+        </div>
+      );
     }
 
     return rows;

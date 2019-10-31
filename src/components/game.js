@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Navbar, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import './game.css';
 import Board from './board';
+import Header from './header';
 
 function Game({
   history,
@@ -13,8 +14,9 @@ function Game({
   jumpTo,
   calculateWinner,
   sort,
+  handleLogout,
   currentUser,
-  handleLogout
+  handleSelectGameMode
 }) {
   const size = 20;
   const current = history[stepNumber];
@@ -51,24 +53,8 @@ function Game({
   }
 
   return (
-    <div>
-      <Navbar sticky="top" bg="dark" variant="dark">
-        <Navbar.Brand href="#home">Navbar with text</Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
-          <Navbar.Text className="navbar-text">
-            Hello, {currentUser.username}
-          </Navbar.Text>
-          <Button
-            variant="light"
-            size="sm"
-            className="navbar-btn"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Navbar.Collapse>
-      </Navbar>
+    <>
+      <Header currentUser={currentUser} handleLogout={handleLogout} />
       <div className="game">
         <div className="game-board">
           <Board
@@ -79,6 +65,12 @@ function Game({
           />
         </div>
         <div className="game-info">
+          <Button
+            variant="warning"
+            onClick={() => handleSelectGameMode('computer')}
+          >
+            Play with computer
+          </Button>
           <div className="status" style={{ color: winner ? 'red' : '#00a3af' }}>
             {status}
           </div>
@@ -101,7 +93,7 @@ function Game({
           <ol>{moves}</ol>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -115,14 +107,16 @@ Game.propTypes = {
   stepNumber: PropTypes.number.isRequired,
   xIsNext: PropTypes.bool.isRequired,
   sortAsc: PropTypes.bool.isRequired,
-  currentUser: PropTypes.shape({
-    username: PropTypes.string.isRequired
-  }).isRequired,
   handleClick: PropTypes.func.isRequired,
   jumpTo: PropTypes.func.isRequired,
   calculateWinner: PropTypes.func.isRequired,
   sort: PropTypes.func.isRequired,
-  handleLogout: PropTypes.func.isRequired
+  currentUser: PropTypes.shape({
+    isPending: PropTypes.bool.isRequired,
+    username: PropTypes.string
+  }).isRequired,
+  handleLogout: PropTypes.func.isRequired,
+  handleSelectGameMode: PropTypes.func.isRequired
 };
 
 export default Game;

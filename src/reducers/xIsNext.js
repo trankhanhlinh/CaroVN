@@ -1,4 +1,4 @@
-import { UPDATE_XISNEXT } from '../actions';
+import { UPDATE_XISNEXT } from '../actions/type';
 
 const xIsNext = (state = true, action) => {
   switch (action.type) {

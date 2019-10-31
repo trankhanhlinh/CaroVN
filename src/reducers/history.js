@@ -1,4 +1,4 @@
-import { ADD_HISTORY } from '../actions';
+import { ADD_HISTORY } from '../actions/type';
 
 const history = (
   state = [

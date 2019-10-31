@@ -1,4 +1,4 @@
-import { REQUEST_REGISTER, RESPONSE_REGISTER } from '../actions';
+import { REQUEST_REGISTER, RESPONSE_REGISTER } from '../actions/type';
 
 const DEFAULT_STATE = {
   isPending: false,
