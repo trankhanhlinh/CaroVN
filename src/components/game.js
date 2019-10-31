@@ -18,7 +18,7 @@ function Game({
   currentUser,
   handleSelectGameMode
 }) {
-  const size = 20;
+  const size = 3;
   const current = history[stepNumber];
   const winner = calculateWinner(current.squares, current.pos, size);
   const sortedHistory = sortAsc ? history : history.slice().reverse();
