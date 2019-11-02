@@ -13,14 +13,16 @@ function Game({
   handleClick,
   jumpTo,
   calculateWinner,
+  isGameDraw,
   sort,
   handleLogout,
   currentUser,
   handleSelectGameMode
 }) {
-  const size = 3;
+  const size = 20;
   const current = history[stepNumber];
   const winner = calculateWinner(current.squares, current.pos, size);
+  const isDraw = isGameDraw(current.squares);
   const sortedHistory = sortAsc ? history : history.slice().reverse();
   const moves = sortedHistory.map((step, move) => {
     const replayIndex = sortAsc ? 0 : sortedHistory.length - 1;
@@ -48,6 +50,8 @@ function Game({
   let status;
   if (winner) {
     status = `Winner is ${winner.player}`;
+  } else if (isDraw) {
+    status = 'Game is draw';
   } else {
     status = `Next player: ${xIsNext ? 'X' : 'O'}`;
   }
@@ -110,6 +114,7 @@ Game.propTypes = {
   handleClick: PropTypes.func.isRequired,
   jumpTo: PropTypes.func.isRequired,
   calculateWinner: PropTypes.func.isRequired,
+  isGameDraw: PropTypes.func.isRequired,
   sort: PropTypes.func.isRequired,
   currentUser: PropTypes.shape({
     isPending: PropTypes.bool.isRequired,

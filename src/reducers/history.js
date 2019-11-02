@@ -3,7 +3,7 @@ import { ADD_HISTORY } from '../actions/type';
 const history = (
   state = [
     {
-      squares: Array(9).fill(null),
+      squares: Array(400).fill(null),
       pos: -1
     }
   ],

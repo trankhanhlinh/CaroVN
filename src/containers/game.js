@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 import Game from '../components/game';
-import { calculateGameWinner, minimax, isDraw } from '../minimax';
+import minimax from '../minimax';
+import { calculateGameWinner, isDraw } from '../minimax/gameSquares';
+import {
+  isMinimaxSquaresFull,
+  getMinimaxSquares
+} from '../minimax/minimaxSquares';
 import {
   addHistory,
   updateStepNumber,
@@ -26,13 +31,11 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
   const current = newHistory[newHistory.length - 1];
   const squares = current.squares.slice();
   const { pos } = current;
-  const size = 3;
-
-  console.log('click state ', stateProps);
+  const size = 20;
 
   resetButtonsDefault();
 
-  if (gameMode.isLocked || squares[i] || isDraw(squares, size)) {
+  if (gameMode.isLocked || squares[i] || isDraw(squares)) {
     return;
   }
 
@@ -52,14 +55,10 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
   if (
     gameMode.mode === 'computer' &&
     !calculateGameWinner(squares, i, size) &&
-    !isDraw(squares, size)
+    !isDraw(squares)
   ) {
     if (xIsNext === false) {
-      console.log('computer move');
-      dispatchProps.updateIsGameLocked(true);
-      const move = minimax(xIsNext, 0, squares, i, size);
-      console.log('computer move ', move);
-      dispatchProps.updateIsGameLocked(false);
+      let move = null;
       const updatedState = {
         history: newHistory.concat([
           {
@@ -74,8 +73,36 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
         },
         xIsNext
       };
-
-      handleClickSquare(move.pos, updatedState, dispatchProps);
+      console.log('computer move');
+      dispatchProps.updateIsGameLocked(true);
+      const minimaxSquares = getMinimaxSquares(squares, i, size);
+      const curMinimaxSquareIndex = minimaxSquares.findIndex(
+        square => square.pos === i
+      );
+      if (isMinimaxSquaresFull(minimaxSquares)) {
+        let randomPos = -1;
+        setTimeout(() => {
+          do {
+            randomPos = Math.floor(Math.random() * size * size);
+          } while (squares[randomPos] !== null);
+          console.log('computer move draw', randomPos);
+          dispatchProps.updateIsGameLocked(false);
+          handleClickSquare(randomPos, updatedState, dispatchProps);
+        }, 1000);
+      } else {
+        move = minimax(
+          xIsNext,
+          0,
+          minimaxSquares,
+          squares,
+          curMinimaxSquareIndex,
+          i,
+          size
+        );
+        console.log('computer move ', move);
+        dispatchProps.updateIsGameLocked(false);
+        handleClickSquare(move.pos, updatedState, dispatchProps);
+      }
     }
   }
 };
@@ -129,6 +156,7 @@ const mergeProps = (stateProps, dispatchProps) => {
   const sort = () => sorting(stateProps, dispatchProps);
   const calculateWinner = (squares, curSquareIndex, size) =>
     calculateGameWinner(squares, curSquareIndex, size);
+  const isGameDraw = squares => isDraw(squares);
   const handleLogout = () => onLogout(dispatchProps);
   const handleSelectGameMode = mode => onSelectGameMode(mode, dispatchProps);
 
@@ -139,6 +167,7 @@ const mergeProps = (stateProps, dispatchProps) => {
     jumpTo,
     sort,
     calculateWinner,
+    isGameDraw,
     handleLogout,
     handleSelectGameMode
   };
