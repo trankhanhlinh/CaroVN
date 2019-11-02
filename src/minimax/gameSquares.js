@@ -1,3 +1,5 @@
+const squaresToWin = 5;
+
 const checkColumn = (squares, curSquareIndex, size) => {
   let count = 1;
   let i = 1;
@@ -32,7 +34,7 @@ const checkColumn = (squares, curSquareIndex, size) => {
     startIndexToWin = curSquareIndex - (i - 1) * size;
   }
 
-  if (count >= 5) {
+  if (count >= squaresToWin) {
     if (
       (startIndexToWin - size >= 0 &&
         endIndexToWin + size < size * size &&
@@ -99,7 +101,7 @@ const checkRow = (squares, curSquareIndex, size) => {
     startIndexToWin = curSquareIndex - (i - 1);
   }
 
-  if (count >= 5) {
+  if (count >= squaresToWin) {
     if (
       (startIndexToWin - 1 >= startIndexCurRow &&
         endIndexToWin + 1 <= endIndexCurRow &&
@@ -179,7 +181,7 @@ const checkRightDiagonalRow = (squares, curSquareIndex, size) => {
     startIndexToWin = curSquareIndex - (i - 1) * (size + 1);
   }
 
-  if (count >= 5) {
+  if (count >= squaresToWin) {
     if (
       (startIndexToWin - (size + 1) >= startIndexCurDiagonalRow &&
         endIndexToWin + (size + 1) <= endIndexCurDiagonalRow &&
@@ -260,7 +262,7 @@ const checkLeftDiagonalRow = (squares, curSquareIndex, size) => {
     startIndexToWin = curSquareIndex - (i - 1) * (size - 1);
   }
 
-  if (count >= 5) {
+  if (count >= squaresToWin) {
     if (
       (startIndexToWin - (size - 1) >= startIndexCurDiagonalRow &&
         endIndexToWin + (size - 1) <= endIndexCurDiagonalRow &&

@@ -1,10 +1,12 @@
 import { connect } from 'react-redux';
 import Game from '../components/game';
-import minimax from '../minimax';
+import { minimax, recursiveLevel } from '../minimax';
 import { calculateGameWinner, isDraw } from '../minimax/gameSquares';
 import {
   isMinimaxSquaresFull,
-  getMinimaxSquares
+  getMinimaxSquares,
+  calculateGameWinnerMinimax,
+  minimaxSquaresSize
 } from '../minimax/minimaxSquares';
 import {
   addHistory,
@@ -76,6 +78,7 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
       console.log('computer move');
       dispatchProps.updateIsGameLocked(true);
       const minimaxSquares = getMinimaxSquares(squares, i, size);
+      console.log('minimax squares ', minimaxSquares);
       const curMinimaxSquareIndex = minimaxSquares.findIndex(
         square => square.pos === i
       );
@@ -89,15 +92,36 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
           dispatchProps.updateIsGameLocked(false);
           handleClickSquare(randomPos, updatedState, dispatchProps);
         }, 1000);
+      } else if (
+        calculateGameWinnerMinimax(minimaxSquares, curMinimaxSquareIndex)
+      ) {
+        let randomPos = -1;
+        setTimeout(() => {
+          do {
+            randomPos = Math.floor(
+              Math.random() * minimaxSquaresSize * minimaxSquaresSize
+            );
+          } while (minimaxSquares[randomPos].value !== null);
+          console.log('computer move win', randomPos);
+          dispatchProps.updateIsGameLocked(false);
+          handleClickSquare(
+            minimaxSquares[randomPos].pos,
+            updatedState,
+            dispatchProps
+          );
+        }, 1000);
       } else {
         move = minimax(
           xIsNext,
           0,
+          recursiveLevel,
           minimaxSquares,
           squares,
           curMinimaxSquareIndex,
           i,
-          size
+          size,
+          -1000,
+          1000
         );
         console.log('computer move ', move);
         dispatchProps.updateIsGameLocked(false);
