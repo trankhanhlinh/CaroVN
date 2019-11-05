@@ -6,36 +6,21 @@ import Board from './board';
 import Header from './header';
 import { gameSquaresSize } from '../minimax/gameSquares';
 
-const socket = io('https://restfulapi-passport-jwt.herokuapp.com:8080', {
-  transport: ['websocket']
-});
+const socket = io('https://restfulapi-passport-jwt.herokuapp.com:8080');
 
-function Game({
-  history,
-  stepNumber,
-  xIsNext,
-  symbol,
-  sortAsc,
-  currentUser,
-  gameMode,
-  handleClick,
-  // computerMove,
-  jumpTo,
-  calculateWinner,
-  updateYourTurn,
-  updateSquareSymbol,
-  isGameDraw,
-  sort,
-  handleLogout,
-  handleSelectGameMode
-}) {
-  if (gameMode.mode !== 'computer') {
+class Game extends React.Component {
+  constructor(props) {
+    super(props);
+    const { updateSquareSymbol, updateYourTurn, handleClick } = this.props;
     // Set up the initial state when the game begins
     socket.on('game.begin', data => {
       // The server will asign X or O to the player
       updateSquareSymbol(data.symbol);
       // Give X the first turn
       updateYourTurn(data.symbol === 'X');
+      document
+        .getElementsByClassName('status')
+        .text(`${data.symbol === 'X' ? 'Your turn' : "Your opponent's turn"}`);
     });
     // Event is called when either player makes a move
     socket.on('move.made', data => {
@@ -49,123 +34,171 @@ function Game({
     });
   }
 
-  const current = history[stepNumber];
-  const winner = calculateWinner(current.squares, current.pos);
-  const isDraw = isGameDraw(current.squares);
-  // const jumpToStep = (e, moveNumber) => {
-  //   if (!gameMode.isLocked) {
-  //     jumpTo(e, moveNumber);
-  //     if (moveNumber % 2 !== 0 && gameMode.mode === 'computer') {
-  //       computerMove();
-  //     }
-  //   }
-  // };
-  const handleClickSquare = position => {
-    if (gameMode.mode !== 'computer') {
-      if (
-        current.squares[position] ||
-        isGameDraw(current.squares) ||
-        !xIsNext
-      ) {
-        return;
+  render() {
+    const {
+      history,
+      stepNumber,
+      xIsNext,
+      symbol,
+      sortAsc,
+      currentUser,
+      gameMode,
+      handleClick,
+      jumpTo,
+      calculateWinner,
+      isGameDraw,
+      sort,
+      handleLogout,
+      handleSelectGameMode
+    } = this.props;
+    // if (gameMode.mode === 'friend') {
+    //   // Set up the initial state when the game begins
+    //   socket.on('game.begin', data => {
+    //     // The server will asign X or O to the player
+    //     updateSquareSymbol(data.symbol);
+    //     // Give X the first turn
+    //     updateYourTurn(data.symbol === 'X');
+    //     document
+    //       .getElementsByClassName('status')
+    //       .text(
+    //         `${data.symbol === 'X' ? 'Your turn' : "Your opponent's turn"}`
+    //       );
+    //   });
+    //   // Event is called when either player makes a move
+    //   socket.on('move.made', data => {
+    //     handleClick(data);
+    //   });
+    //   // Disable the board if the opponent leaves
+    //   socket.on('opponent.left', () => {
+    //     document
+    //       .getElementsByClassName('status')
+    //       .text('Your opponent left the game.');
+    //   });
+    // }
+
+    const current = history[stepNumber];
+    const winner = calculateWinner(current.squares, current.pos);
+    const isDraw = isGameDraw(current.squares);
+    // const jumpToStep = (e, moveNumber) => {
+    //   if (!gameMode.isLocked) {
+    //     jumpTo(e, moveNumber);
+    //     if (moveNumber % 2 !== 0 && gameMode.mode === 'computer') {
+    //       computerMove();
+    //     }
+    //   }
+    // };
+    const handleClickSquare = position => {
+      if (gameMode.mode === 'friend') {
+        if (
+          current.squares[position] ||
+          isGameDraw(current.squares) ||
+          !xIsNext
+        ) {
+          return;
+        }
+
+        // check previous step
+        if (calculateWinner(current.squares, current.pos)) {
+          return;
+        }
+
+        // Emit the move to the server
+        socket.emit('make.move', {
+          symbol,
+          position
+        });
+      } else {
+        handleClick(position);
       }
-
-      // check previous step
-      if (calculateWinner(current.squares, current.pos)) {
-        return;
-      }
-
-      // Emit the move to the server
-      socket.emit('make.move', {
-        symbol,
-        position
-      });
-    } else {
-      handleClick(position);
-    }
-  };
-  const sortedHistory = sortAsc ? history : history.slice().reverse();
-  const moves = sortedHistory.map((step, move) => {
-    const replayIndex = sortAsc ? 0 : sortedHistory.length - 1;
-    if (move !== replayIndex) {
-      const properMove = sortAsc ? move : history.length - 1 - move;
-      const desc = `Go to move #${properMove} (${parseInt(
-        step.pos / gameSquaresSize,
-        10
-      )},${step.pos % gameSquaresSize})`;
-      return (
-        <li key={properMove}>
-          <button
-            type="button"
-            className="step-button"
-            onClick={e => jumpTo(e, properMove)}
-          >
-            {desc}
-          </button>
-        </li>
-      );
-    }
-    return null;
-  });
-
-  let status;
-  if (winner) {
-    status = `Game over. ${xIsNext ? 'You lost.' : 'You won!'}`;
-  } else if (isDraw) {
-    status = 'Game is draw';
-  } else {
-    status = `${xIsNext ? 'Your turn' : "Your opponent's turn"}`;
-  }
-
-  return (
-    <>
-      <Header currentUser={currentUser} handleLogout={handleLogout} />
-      <div className="game">
-        <div className="game-board">
-          <Board
-            winningSquares={winner ? winner.winningSquares : []}
-            size={gameSquaresSize}
-            squares={current.squares}
-            onClick={i => handleClickSquare(i)}
-          />
-        </div>
-        <div className="game-info">
-          <Button
-            variant="warning"
-            onClick={() => handleSelectGameMode('computer')}
-          >
-            Play with computer
-          </Button>
-          <Button
-            variant="success"
-            onClick={() => handleSelectGameMode('friend')}
-          >
-            Play with a friend
-          </Button>
-          <div className="status" style={{ color: winner ? 'red' : '#00a3af' }}>
-            {status}
-          </div>
-          <button
-            type="button"
-            className="replay-button"
-            onClick={e => jumpTo(e, 0)}
-          >
-            Replay
-          </button>
-          {history.length > 2 ? (
+    };
+    const sortedHistory = sortAsc ? history : history.slice().reverse();
+    const moves = sortedHistory.map((step, move) => {
+      const replayIndex = sortAsc ? 0 : sortedHistory.length - 1;
+      if (move !== replayIndex) {
+        const properMove = sortAsc ? move : history.length - 1 - move;
+        const desc = `Go to move #${properMove} (${parseInt(
+          step.pos / gameSquaresSize,
+          10
+        )},${step.pos % gameSquaresSize})`;
+        return (
+          <li key={properMove}>
             <button
               type="button"
-              className="sort-button"
-              onClick={() => sort()}
+              className="step-button"
+              onClick={e => jumpTo(e, properMove)}
             >
-              {sortAsc ? 'descending sort' : 'ascending sort'}
+              {desc}
             </button>
-          ) : null}
-          <ol>{moves}</ol>
+          </li>
+        );
+      }
+      return null;
+    });
+
+    let status;
+    if (winner) {
+      status = `Game over. ${xIsNext ? 'You lost.' : 'You won!'}`;
+    } else if (isDraw) {
+      status = 'Game is draw';
+    } else if (gameMode.mode === 'friend') {
+      status = 'Waiting for opponent to join...';
+    } else {
+      status = `Next player: ${xIsNext ? 'X' : 'O'}`;
+    }
+
+    return (
+      <>
+        <Header currentUser={currentUser} handleLogout={handleLogout} />
+        <div className="game">
+          <div className="game-board">
+            <Board
+              winningSquares={winner ? winner.winningSquares : []}
+              size={gameSquaresSize}
+              squares={current.squares}
+              onClick={i => handleClickSquare(i)}
+            />
+          </div>
+          <div className="game-info">
+            <Button
+              variant="warning"
+              onClick={() => handleSelectGameMode('computer')}
+            >
+              Play with computer
+            </Button>
+            <Button
+              variant="success"
+              onClick={() => handleSelectGameMode('friend')}
+            >
+              Play with a friend
+            </Button>
+            <div
+              className="status"
+              style={{ color: winner ? 'red' : '#00a3af' }}
+            >
+              {status}
+            </div>
+            <button
+              type="button"
+              className="replay-button"
+              onClick={e => jumpTo(e, 0)}
+            >
+              Replay
+            </button>
+            {history.length > 2 ? (
+              <button
+                type="button"
+                className="sort-button"
+                onClick={() => sort()}
+              >
+                {sortAsc ? 'descending sort' : 'ascending sort'}
+              </button>
+            ) : null}
+            <ol>{moves}</ol>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 }
 
 Game.propTypes = {

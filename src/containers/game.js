@@ -118,7 +118,7 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
 
   resetButtonsDefault();
 
-  const position = gameMode.mode !== 'computer' ? i.position : i;
+  const position = gameMode.mode === 'friend' ? i.position : i;
 
   if (gameMode.isLocked || squares[position] || isDraw(squares) || !xIsNext) {
     return;
@@ -129,7 +129,7 @@ const handleClickSquare = (i, stateProps, dispatchProps) => {
     return;
   }
 
-  if (gameMode.mode !== 'computer') {
+  if (gameMode.mode === 'friend') {
     squares[position] = symbol;
     xIsNext = i.symbol !== symbol;
   } else {
