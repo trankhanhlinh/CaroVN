@@ -1,37 +1,98 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import './game.css';
+import io from 'socket.io-client';
 import Board from './board';
 import Header from './header';
+import { gameSquaresSize } from '../minimax/gameSquares';
+
+const socket = io('https://restfulapi-passport-jwt.herokuapp.com:8080', {
+  transport: ['websocket']
+});
 
 function Game({
   history,
   stepNumber,
   xIsNext,
+  symbol,
   sortAsc,
+  currentUser,
+  gameMode,
   handleClick,
+  // computerMove,
   jumpTo,
   calculateWinner,
+  updateYourTurn,
+  updateSquareSymbol,
   isGameDraw,
   sort,
   handleLogout,
-  currentUser,
   handleSelectGameMode
 }) {
-  const size = 20;
+  if (gameMode.mode !== 'computer') {
+    // Set up the initial state when the game begins
+    socket.on('game.begin', data => {
+      // The server will asign X or O to the player
+      updateSquareSymbol(data.symbol);
+      // Give X the first turn
+      updateYourTurn(data.symbol === 'X');
+    });
+    // Event is called when either player makes a move
+    socket.on('move.made', data => {
+      handleClick(data);
+    });
+    // Disable the board if the opponent leaves
+    socket.on('opponent.left', () => {
+      document
+        .getElementsByClassName('status')
+        .text('Your opponent left the game.');
+    });
+  }
+
   const current = history[stepNumber];
-  const winner = calculateWinner(current.squares, current.pos, size);
+  const winner = calculateWinner(current.squares, current.pos);
   const isDraw = isGameDraw(current.squares);
+  // const jumpToStep = (e, moveNumber) => {
+  //   if (!gameMode.isLocked) {
+  //     jumpTo(e, moveNumber);
+  //     if (moveNumber % 2 !== 0 && gameMode.mode === 'computer') {
+  //       computerMove();
+  //     }
+  //   }
+  // };
+  const handleClickSquare = position => {
+    if (gameMode.mode !== 'computer') {
+      if (
+        current.squares[position] ||
+        isGameDraw(current.squares) ||
+        !xIsNext
+      ) {
+        return;
+      }
+
+      // check previous step
+      if (calculateWinner(current.squares, current.pos)) {
+        return;
+      }
+
+      // Emit the move to the server
+      socket.emit('make.move', {
+        symbol,
+        position
+      });
+    } else {
+      handleClick(position);
+    }
+  };
   const sortedHistory = sortAsc ? history : history.slice().reverse();
   const moves = sortedHistory.map((step, move) => {
     const replayIndex = sortAsc ? 0 : sortedHistory.length - 1;
     if (move !== replayIndex) {
       const properMove = sortAsc ? move : history.length - 1 - move;
       const desc = `Go to move #${properMove} (${parseInt(
-        step.pos / size,
+        step.pos / gameSquaresSize,
         10
-      )},${step.pos % size})`;
+      )},${step.pos % gameSquaresSize})`;
       return (
         <li key={properMove}>
           <button
@@ -49,11 +110,11 @@ function Game({
 
   let status;
   if (winner) {
-    status = `Winner is ${winner.player}`;
+    status = `Game over. ${xIsNext ? 'You lost.' : 'You won!'}`;
   } else if (isDraw) {
     status = 'Game is draw';
   } else {
-    status = `Next player: ${xIsNext ? 'X' : 'O'}`;
+    status = `${xIsNext ? 'Your turn' : "Your opponent's turn"}`;
   }
 
   return (
@@ -63,9 +124,9 @@ function Game({
         <div className="game-board">
           <Board
             winningSquares={winner ? winner.winningSquares : []}
-            size={size}
+            size={gameSquaresSize}
             squares={current.squares}
-            onClick={i => handleClick(i)}
+            onClick={i => handleClickSquare(i)}
           />
         </div>
         <div className="game-info">
@@ -74,6 +135,12 @@ function Game({
             onClick={() => handleSelectGameMode('computer')}
           >
             Play with computer
+          </Button>
+          <Button
+            variant="success"
+            onClick={() => handleSelectGameMode('friend')}
+          >
+            Play with a friend
           </Button>
           <div className="status" style={{ color: winner ? 'red' : '#00a3af' }}>
             {status}
@@ -110,18 +177,31 @@ Game.propTypes = {
   ).isRequired,
   stepNumber: PropTypes.number.isRequired,
   xIsNext: PropTypes.bool.isRequired,
+  symbol: PropTypes.string.isRequired,
   sortAsc: PropTypes.bool.isRequired,
+  gameMode: PropTypes.shape({
+    mode: PropTypes.string.isRequired,
+    isLocked: PropTypes.bool.isRequired
+  }).isRequired,
   handleClick: PropTypes.func.isRequired,
   jumpTo: PropTypes.func.isRequired,
   calculateWinner: PropTypes.func.isRequired,
+  updateYourTurn: PropTypes.func.isRequired,
+  updateSquareSymbol: PropTypes.func.isRequired,
   isGameDraw: PropTypes.func.isRequired,
   sort: PropTypes.func.isRequired,
   currentUser: PropTypes.shape({
     isPending: PropTypes.bool.isRequired,
-    username: PropTypes.string
+    username: PropTypes.string,
+    password: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired
   }).isRequired,
   handleLogout: PropTypes.func.isRequired,
   handleSelectGameMode: PropTypes.func.isRequired
+  // computerMove: PropTypes.func.isRequired
 };
 
 export default Game;

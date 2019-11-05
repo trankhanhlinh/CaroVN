@@ -6,12 +6,19 @@ import {
   REQUEST_LOGIN,
   RESPONSE_LOGIN,
   UPDATE_CUR_USER,
+  REQUEST_UPDATE_USER_INFO,
+  RESPONSE_UPDATE_USER_INFO,
   LOGOUT
 } from '../actions/type';
 
 const DEFAULT_USER_STATE = {
   isPending: false,
-  username: null
+  username: null,
+  password: '',
+  firstName: '',
+  lastName: '',
+  avatar: '',
+  email: ''
 };
 
 const DEFAULT_STATE = {
@@ -44,7 +51,11 @@ const login = (state = DEFAULT_USER_STATE, action) => {
         ...state,
         isPending: false,
         username: action.username,
-        id: action.id
+        password: action.password,
+        firstName: action.firstName,
+        lastName: action.lastName,
+        avatar: action.avatar,
+        email: action.email
       };
     case LOGIN_ERROR:
       return DEFAULT_USER_STATE;
@@ -81,8 +92,30 @@ export default (state = DEFAULT_STATE, action) => {
       console.log('[RESPONSE_LOGIN] state ', state);
       return { ...state, isAuthenticated: true, token: action.payload };
     case UPDATE_CUR_USER:
-      // console.log('[UPDATE_CUR_USER] state ', state);
+      console.log('[UPDATE_CUR_USER] state ', state);
       return { ...state, currentUser: login(state.currentUser, action) };
+    case REQUEST_UPDATE_USER_INFO:
+      console.log('[REQUEST_UPDATE_USER_INFO] state ', state);
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          isPending: true
+        }
+      };
+    case RESPONSE_UPDATE_USER_INFO:
+      console.log('[RESPONSE_UPDATE_USER_INFO] state ', state);
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          isPending: false,
+          firstName: action.firstName,
+          lastName: action.lastName,
+          email: action.email,
+          avatar: action.avatar ? action.avatar : state.currentUser.avatar
+        }
+      };
     case LOGIN_ERROR:
       console.log('[LOGIN_ERROR] state ', state);
       return {

@@ -10,6 +10,24 @@ form.basic-form {
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
+.form-group .avatar {
+  height: 8em;
+  width: 8em;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.form-group .avatar img {
+  height: 100%;
+  width: 100%;
+  transform: scale(1.03);
+  transition: transform 800ms ease;
+}
+
+.form-group img:hover {
+  transform: scale(1);
+}
+
 .form-label {
   font-size: 1em;
 }

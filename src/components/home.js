@@ -22,7 +22,12 @@ function Home({ currentUser, handleLogout }) {
 Home.propTypes = {
   currentUser: PropTypes.shape({
     isPending: PropTypes.bool.isRequired,
-    username: PropTypes.string
+    username: PropTypes.string,
+    password: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired
   }).isRequired,
   handleLogout: PropTypes.func.isRequired
 };

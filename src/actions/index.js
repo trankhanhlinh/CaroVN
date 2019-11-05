@@ -5,6 +5,7 @@ import {
   ADD_HISTORY,
   UPDATE_STEPNUMBER,
   UPDATE_XISNEXT,
+  UPDATE_SYMBOL,
   TOGGLE_SORTASC,
   REGISTER_ERROR,
   REQUEST_REGISTER,
@@ -13,6 +14,8 @@ import {
   REQUEST_LOGIN,
   RESPONSE_LOGIN,
   UPDATE_CUR_USER,
+  REQUEST_UPDATE_USER_INFO,
+  RESPONSE_UPDATE_USER_INFO,
   LOGOUT
 } from './type';
 
@@ -41,6 +44,11 @@ export const updateStepNumber = stepNumber => ({
 export const updateXIsNext = xIsNext => ({
   type: UPDATE_XISNEXT,
   xIsNext
+});
+
+export const updateSymbol = symbol => ({
+  type: UPDATE_SYMBOL,
+  symbol
 });
 
 export const toggleSortAsc = () => ({
@@ -89,12 +97,33 @@ export function register(newUser) {
   };
 }
 
-export function updateCurrentUser(json) {
+function updateCurrentUser(json) {
   // me
   return {
     type: UPDATE_CUR_USER,
+    id: json.ID,
     username: json.USERNAME,
-    id: json.ID
+    password: json.PASSWORD,
+    firstName: json.FIRSTNAME,
+    lastName: json.LASTNAME,
+    avatar: json.AVATAR,
+    email: json.EMAIL
+  };
+}
+
+function requestUpdateUser() {
+  return {
+    type: REQUEST_UPDATE_USER_INFO
+  };
+}
+
+function responseUpdateUser(user) {
+  return {
+    type: RESPONSE_UPDATE_USER_INFO,
+    firstName: user.FIRSTNAME,
+    lastName: user.LASTNAME,
+    email: user.EMAIL,
+    avatar: user.AVATAR ? user.AVATAR : ''
   };
 }
 
@@ -111,6 +140,61 @@ function responseLogin(json) {
   };
 }
 
+export function updateUserInfo(updatedUser) {
+  return dispatch => {
+    dispatch(requestUpdateUser());
+    return fetch('https://restfulapi-passport-jwt.herokuapp.com/me/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `USERNAME=${updatedUser.USERNAME}&FIRSTNAME=${updatedUser.FIRSTNAME}&LASTNAME=${updatedUser.LASTNAME}&EMAIL=${updatedUser.EMAIL}`
+    })
+      .then(response => response.json())
+      .then(json => {
+        if (json.user) {
+          dispatch(responseUpdateUser(json.user));
+        } else {
+          console.log('error ', json);
+        }
+      })
+      .catch();
+  };
+}
+
+export function updateUserInfoInCludingAvatar(updatedUser) {
+  return dispatch => {
+    dispatch(requestUpdateUser());
+    const formData = new FormData();
+    formData.append('avatar', updatedUser.AVATAR);
+    return fetch(
+      'https://restfulapi-passport-jwt.herokuapp.com/me/upload-avatar',
+      {
+        method: 'POST',
+        body: formData
+      }
+    )
+      .then(response => response.json())
+      .then(json => {
+        return fetch(
+          'https://restfulapi-passport-jwt.herokuapp.com/me/update',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `USERNAME=${updatedUser.USERNAME}&FIRSTNAME=${updatedUser.FIRSTNAME}&LASTNAME=${updatedUser.LASTNAME}&EMAIL=${updatedUser.EMAIL}&AVATAR=${json.fileUrl}`
+          }
+        );
+      })
+      .then(response => response.json())
+      .then(json => {
+        if (json.user) {
+          dispatch(responseUpdateUser(json.user));
+        } else {
+          console.log('error ', json);
+        }
+      })
+      .catch();
+  };
+}
+
 export function authenticate(jwt) {
   return dispatch => {
     return fetch('https://restfulapi-passport-jwt.herokuapp.com/me', {
@@ -121,7 +205,9 @@ export function authenticate(jwt) {
       }
     })
       .then(response => response.json())
-      .then(json => dispatch(updateCurrentUser(json)))
+      .then(json => {
+        dispatch(updateCurrentUser(json));
+      })
       .catch();
   };
 }

@@ -9,14 +9,42 @@ body {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
 }
 
+.navbar-nav a {
+  text-decoration: none;
+}
+
+.navbar-nav .nav-link {
+  text-decoration: none;
+  font-size: 1.3em;
+}
+
 .navbar-text {
   color: #fff;
   margin-right: 1em;
   font-size: 1.1em;
 }
 
-.navbar-btn {
-  font-size: 1em;
+.navbar-text .dropdown-menu {
+  background-color: #545b62;
+}
+
+.navbar-text .dropdown-menu .dropdown-item {
+  transition: hover 200ms ease;
+  font-size: 0.9em;
+}
+
+.navbar-text .dropdown-menu .dropdown-item.active,
+.dropdown-item:active {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+
+.navbar-text .dropdown-menu .dropdown-item:hover,
+.navbar-text .dropdown-menu .dropdown-item:hover a {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #f8f9fa;
 }
 
 .game {

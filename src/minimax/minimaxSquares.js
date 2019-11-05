@@ -1,4 +1,4 @@
-export const minimaxSquaresSize = 6;
+export const minimaxSquaresSize = 5;
 const checkColumnMinimax = (squares, curSquareIndex, size) => {
   let count = 1;
   let i = 1;
@@ -510,17 +510,17 @@ const rowCheck = (
         // } else {
         //   minimaxPos = curIndex - size * (curRow - checkedRow) - (2 - i);
         // } else if (curColumn === 1) {
-        //   // 5x5
-        //   minimaxPos = curIndex - size * (curRow - checkedRow) - (1 - i);
-        // } else if (curColumn === size - 2) {
-        //   minimaxPos = curIndex - size * (curRow - checkedRow) - (3 - i);
-        // } else {
-        //   minimaxPos = curIndex - size * (curRow - checkedRow) - (2 - i);
-      } else if (curColumn === 1 || curColumn === 2 || curColumn === 3) {
-        // 6x6
-        minimaxPos = curIndex - size * (curRow - checkedRow) - (curColumn - i);
+        // 5x5
+        minimaxPos = curIndex - size * (curRow - checkedRow) - (1 - i);
+      } else if (curColumn === size - 2) {
+        minimaxPos = curIndex - size * (curRow - checkedRow) - (3 - i);
       } else {
-        minimaxPos = curIndex - size * (curRow - checkedRow) - (4 - i);
+        minimaxPos = curIndex - size * (curRow - checkedRow) - (2 - i);
+        // } else if (curColumn === 1 || curColumn === 2 || curColumn === 3) {
+        //   // 6x6
+        //   minimaxPos = curIndex - size * (curRow - checkedRow) - (curColumn - i);
+        // } else {
+        //   minimaxPos = curIndex - size * (curRow - checkedRow) - (4 - i);
       }
     } else if (checkedRow > curRow) {
       if (curColumn === 0) {
@@ -539,17 +539,17 @@ const rowCheck = (
         // } else {
         //   minimaxPos = curIndex + size * (checkedRow - curRow) - (2 - i);
         // } else if (curColumn === 1) {
-        //   // 5x5
-        //   minimaxPos = curIndex + size * (checkedRow - curRow) - (1 - i);
-        // } else if (curColumn === size - 2) {
-        //   minimaxPos = curIndex + size * (checkedRow - curRow) - (3 - i);
-        // } else {
-        //   minimaxPos = curIndex + size * (checkedRow - curRow) - (2 - i);
-      } else if (curColumn === 1 || curColumn === 2 || curColumn === 3) {
-        // 6x6
-        minimaxPos = curIndex + size * (checkedRow - curRow) - (curColumn - i);
+        // 5x5
+        minimaxPos = curIndex + size * (checkedRow - curRow) - (1 - i);
+      } else if (curColumn === size - 2) {
+        minimaxPos = curIndex + size * (checkedRow - curRow) - (3 - i);
       } else {
-        minimaxPos = curIndex + size * (checkedRow - curRow) - (4 - i);
+        minimaxPos = curIndex + size * (checkedRow - curRow) - (2 - i);
+        // } else if (curColumn === 1 || curColumn === 2 || curColumn === 3) {
+        //   // 6x6
+        //   minimaxPos = curIndex + size * (checkedRow - curRow) - (curColumn - i);
+        // } else {
+        //   minimaxPos = curIndex + size * (checkedRow - curRow) - (4 - i);
       }
     } else if (checkedRow === curRow) {
       if (curColumn === 0) {
@@ -567,17 +567,17 @@ const rowCheck = (
         // } else {
         //   minimaxPos = curIndex - (2 - i);
         // } else if (curColumn === 1) {
-        //   // 5x5
-        //   minimaxPos = curIndex - (1 - i);
-        // } else if (curColumn === size - 2) {
-        //   minimaxPos = curIndex - (3 - i);
-        // } else {
-        //   minimaxPos = curIndex - (2 - i);
-      } else if (curColumn === 1 || curColumn === 2 || curColumn === 3) {
-        // 6x6
-        minimaxPos = curIndex - (curColumn - i);
+        // 5x5
+        minimaxPos = curIndex - (1 - i);
+      } else if (curColumn === size - 2) {
+        minimaxPos = curIndex - (3 - i);
       } else {
-        minimaxPos = curIndex - (4 - i);
+        minimaxPos = curIndex - (2 - i);
+        // } else if (curColumn === 1 || curColumn === 2 || curColumn === 3) {
+        //   // 6x6
+        //   minimaxPos = curIndex - (curColumn - i);
+        // } else {
+        //   minimaxPos = curIndex - (4 - i);
       }
     }
 
@@ -643,38 +643,38 @@ export const getMinimaxSquares = (squares, curIndex, size) => {
     //     rowEnd = rowStart + size - 1;
     //     rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
     //   }
-    // } else if (curRow === 1) {
-    //   // 5x5
-    //   for (let i = 0; i < minimaxSquaresSize; i += 1) {
-    //     rowStart = i * size;
-    //     rowEnd = rowStart + size - 1;
-    //     rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
-    //   }
-    // } else if (curRow === size - 2) {
-    //   for (let i = 0; i < minimaxSquaresSize; i += 1) {
-    //     rowStart = (size - 1 - i) * size;
-    //     rowEnd = rowStart + size - 1;
-    //     rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
-    //   }
-    // } else {
-    //   for (let i = 0; i < minimaxSquaresSize; i += 1) {
-    //     rowStart = (curRow - 2 + i) * size;
-    //     rowEnd = rowStart + size - 1;
-    //     rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
-    //   }
-  } else if (curRow === 1 || curRow === 2 || curRow === 3) {
-    // 6x6
+  } else if (curRow === 1) {
+    // 5x5
     for (let i = 0; i < minimaxSquaresSize; i += 1) {
       rowStart = i * size;
       rowEnd = rowStart + size - 1;
       rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
     }
-  } else {
+  } else if (curRow === size - 2) {
     for (let i = 0; i < minimaxSquaresSize; i += 1) {
-      rowStart = (curRow - 4 + i) * size;
+      rowStart = (size - 1 - i) * size;
       rowEnd = rowStart + size - 1;
       rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
     }
+  } else {
+    for (let i = 0; i < minimaxSquaresSize; i += 1) {
+      rowStart = (curRow - 2 + i) * size;
+      rowEnd = rowStart + size - 1;
+      rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
+    }
+    // } else if (curRow === 1 || curRow === 2 || curRow === 3) {
+    //   // 6x6
+    //   for (let i = 0; i < minimaxSquaresSize; i += 1) {
+    //     rowStart = i * size;
+    //     rowEnd = rowStart + size - 1;
+    //     rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
+    //   }
+    // } else {
+    //   for (let i = 0; i < minimaxSquaresSize; i += 1) {
+    //     rowStart = (curRow - 4 + i) * size;
+    //     rowEnd = rowStart + size - 1;
+    //     rowCheck(rowStart, rowEnd, squares, curIndex, size, minimaxSquares);
+    //   }
   }
 
   return sortMinimaxSquares(minimaxSquares);

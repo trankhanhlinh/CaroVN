@@ -48,7 +48,12 @@ function Register({ registerUser, errorMessage, onSubmit }) {
 Register.propTypes = {
   registerUser: PropTypes.shape({
     isPending: PropTypes.bool.isRequired,
-    username: PropTypes.string
+    username: PropTypes.string,
+    password: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    avatar: PropTypes.string,
+    email: PropTypes.string
   }).isRequired,
   onSubmit: PropTypes.func.isRequired
 };

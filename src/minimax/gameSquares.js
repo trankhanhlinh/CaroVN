@@ -1,4 +1,5 @@
 const squaresToWin = 5;
+export const gameSquaresSize = 20;
 
 const checkColumn = (squares, curSquareIndex, size) => {
   let count = 1;
@@ -293,19 +294,19 @@ const checkLeftDiagonalRow = (squares, curSquareIndex, size) => {
   return null;
 };
 
-export const calculateGameWinner = (squares, curSquareIndex, size) => {
+export const calculateGameWinner = (squares, curSquareIndex) => {
   let result = null;
 
-  result = checkColumn(squares, curSquareIndex, size);
+  result = checkColumn(squares, curSquareIndex, gameSquaresSize);
   if (result) return result;
 
-  result = checkRow(squares, curSquareIndex, size);
+  result = checkRow(squares, curSquareIndex, gameSquaresSize);
   if (result) return result;
 
-  result = checkRightDiagonalRow(squares, curSquareIndex, size);
+  result = checkRightDiagonalRow(squares, curSquareIndex, gameSquaresSize);
   if (result) return result;
 
-  result = checkLeftDiagonalRow(squares, curSquareIndex, size);
+  result = checkLeftDiagonalRow(squares, curSquareIndex, gameSquaresSize);
   if (result) return result;
 
   return null;

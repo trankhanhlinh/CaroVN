@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,6 +10,7 @@ import {
 import Login from '../containers/login';
 import Register from '../containers/register';
 import Game from '../containers/game';
+import PersonalPage from '../containers/personalPage';
 import Home from '../containers/home';
 
 export default function App({ currentUser, onAuthenticate }) {
@@ -44,6 +46,13 @@ export default function App({ currentUser, onAuthenticate }) {
             onAuthenticate={onAuthenticate}
           >
             <Game />
+          </PrivateRoute>
+          <PrivateRoute
+            path="/me"
+            currentUser={currentUser}
+            onAuthenticate={onAuthenticate}
+          >
+            <PersonalPage />
           </PrivateRoute>
           {/* <Route path="/login">
             <Login />
@@ -105,3 +114,16 @@ class PrivateRoute extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  currentUser: PropTypes.shape({
+    isPending: PropTypes.bool.isRequired,
+    username: PropTypes.string,
+    password: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    avatar: PropTypes.string,
+    email: PropTypes.string
+  }).isRequired,
+  onAuthenticate: PropTypes.func.isRequired
+};

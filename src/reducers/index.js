@@ -4,6 +4,7 @@ import history from './history';
 import sortAsc from './sortAsc';
 import stepNumber from './stepNumber';
 import xIsNext from './xIsNext';
+import symbol from './symbol';
 import auth from './auth';
 
 const appReducer = combineReducers({
@@ -12,6 +13,7 @@ const appReducer = combineReducers({
   sortAsc,
   stepNumber,
   xIsNext,
+  symbol,
   auth
 });
 
