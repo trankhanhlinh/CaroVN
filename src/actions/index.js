@@ -16,6 +16,7 @@ import {
   UPDATE_CUR_USER,
   REQUEST_UPDATE_USER_INFO,
   RESPONSE_UPDATE_USER_INFO,
+  RESPONSE_UPDATE_USER_PASSWORD,
   LOGOUT
 } from './type';
 
@@ -127,6 +128,13 @@ function responseUpdateUser(user) {
   };
 }
 
+function responseUpdateUserPassword(user) {
+  return {
+    type: RESPONSE_UPDATE_USER_PASSWORD,
+    password: user.PASSWORD
+  };
+}
+
 function requestLogin() {
   return {
     type: REQUEST_LOGIN
@@ -152,6 +160,29 @@ export function updateUserInfo(updatedUser) {
       .then(json => {
         if (json.user) {
           dispatch(responseUpdateUser(json.user));
+        } else {
+          console.log('error ', json);
+        }
+      })
+      .catch();
+  };
+}
+
+export function updateUserPassword(updatedUser) {
+  return dispatch => {
+    dispatch(requestUpdateUser());
+    return fetch(
+      'https://restfulapi-passport-jwt.herokuapp.com/me/update-password',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `USERNAME=${updatedUser.USERNAME}&CUR_PASSWORD=${updatedUser.CUR_PASSWORD}&NEW_PASSWORD=${updatedUser.NEW_PASSWORD}`
+      }
+    )
+      .then(response => response.json())
+      .then(json => {
+        if (json.user) {
+          dispatch(responseUpdateUserPassword(json.user));
         } else {
           console.log('error ', json);
         }

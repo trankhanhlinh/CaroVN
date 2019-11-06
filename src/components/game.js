@@ -18,9 +18,8 @@ class Game extends React.Component {
       updateSquareSymbol(data.symbol);
       // Give X the first turn
       updateYourTurn(data.symbol === 'X');
-      document
-        .getElementsByClassName('status')
-        .text(`${data.symbol === 'X' ? 'Your turn' : "Your opponent's turn"}`);
+      document.getElementById('status').innerHTML =
+        data.symbol === 'X' ? 'Your turn' : "Your opponent's turn";
     });
     // Event is called when either player makes a move
     socket.on('move.made', data => {
@@ -172,6 +171,7 @@ class Game extends React.Component {
               Play with a friend
             </Button>
             <div
+              id="status"
               className="status"
               style={{ color: winner ? 'red' : '#00a3af' }}
             >
