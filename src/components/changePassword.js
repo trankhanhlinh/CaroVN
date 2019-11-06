@@ -41,7 +41,12 @@ function ChangePassword({
         {currentUser.isPending && <Loading />}
         <Form.Group controlId="formBasicCurrentPassword">
           <Form.Label>Current password</Form.Label>
-          <Form.Control type="password" name="currentPassword" required />
+          <Form.Control
+            type="password"
+            name="currentPassword"
+            placeholder="Enter current password"
+            required
+          />
           <Form.Control.Feedback type="invalid">
             Current password is required.
           </Form.Control.Feedback>
@@ -49,7 +54,12 @@ function ChangePassword({
 
         <Form.Group controlId="formBasicNewPassword">
           <Form.Label>New password</Form.Label>
-          <Form.Control type="password" name="newPassword" required />
+          <Form.Control
+            type="password"
+            name="newPassword"
+            placeholder="Enter new password"
+            required
+          />
           <Form.Control.Feedback type="invalid">
             New password is required.
           </Form.Control.Feedback>

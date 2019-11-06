@@ -43,8 +43,12 @@ function Header({ currentUser, handleLogout }) {
                 <Link to="/me">Personal Page</Link>
               </Dropdown.Item>
 
+              <Dropdown.Item eventKey="2">
+                <Link to="/change-password">Change password</Link>
+              </Dropdown.Item>
+
               <Dropdown.Divider />
-              <Dropdown.Item eventKey="2" onClick={handleLogout}>
+              <Dropdown.Item eventKey="3" onClick={handleLogout}>
                 Logout
               </Dropdown.Item>
             </DropdownButton>

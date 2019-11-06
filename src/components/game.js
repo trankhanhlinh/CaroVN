@@ -27,9 +27,8 @@ class Game extends React.Component {
     });
     // Disable the board if the opponent leaves
     socket.on('opponent.left', () => {
-      document
-        .getElementsByClassName('status')
-        .text('Your opponent left the game.');
+      document.getElementById('status').innerHTML =
+        'Your opponent left the game.';
     });
   }
 

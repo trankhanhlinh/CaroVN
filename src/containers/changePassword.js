@@ -10,7 +10,7 @@ const handleUpdateUser = (event, stateProps, dispatchProps) => {
   event.preventDefault();
   const form = event.target;
   const updatedUser = {
-    USERNAME: stateProps.currentUser.USERNAME,
+    USERNAME: stateProps.currentUser.username,
     CUR_PASSWORD: form.elements.currentPassword.value,
     NEW_PASSWORD: form.elements.newPassword.value
   };
@@ -21,12 +21,12 @@ const handleUpdateUser = (event, stateProps, dispatchProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  handleLogout: () => dispatch(logout()),
+  logout: () => dispatch(logout()),
   updateUserPassword: updatedUser => dispatch(updateUserPassword(updatedUser))
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
-  const handleLogout = () => dispatchProps.handleLogout;
+  const handleLogout = () => dispatchProps.logout();
   const hanldeUpdateUserPassword = e =>
     handleUpdateUser(e, stateProps, dispatchProps);
 

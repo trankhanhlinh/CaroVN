@@ -181,10 +181,11 @@ export function updateUserPassword(updatedUser) {
     )
       .then(response => response.json())
       .then(json => {
+        console.log('update password ', updatedUser);
         if (json.user) {
           dispatch(responseUpdateUserPassword(json.user));
         } else {
-          console.log('error ', json);
+          console.log('error ', json.error);
         }
       })
       .catch();
