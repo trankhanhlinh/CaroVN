@@ -19,7 +19,13 @@ import {
   updateSymbol,
   toggleSortAsc,
   logout,
-  updateIsGameLocked
+  updateIsGameLocked,
+  selectGameMode,
+  resetXIsNext,
+  resetHistory,
+  resetSymbol,
+  resetSortAsc,
+  resetStepNumber
 } from '../actions';
 
 const resetButtonsDefault = () => {
@@ -277,6 +283,14 @@ const onLogout = dispatchProps => {
   dispatchProps.logout();
 };
 
+const resetGame = dispatchProps => {
+  dispatchProps.resetStepNumber();
+  dispatchProps.resetXIsNext();
+  dispatchProps.resetSymbol();
+  dispatchProps.resetSortAsc();
+  dispatchProps.resetHistory();
+};
+
 const mapStateToProps = state => ({
   history: state.history,
   stepNumber: state.stepNumber,
@@ -295,7 +309,13 @@ const mapDispatchToProps = dispatch => ({
   updateSymbol: symbol => dispatch(updateSymbol(symbol)),
   toggleSortAsc: sortAsc => dispatch(toggleSortAsc(sortAsc)),
   logout: () => dispatch(logout()),
-  updateIsGameLocked: isLocked => dispatch(updateIsGameLocked(isLocked))
+  updateIsGameLocked: isLocked => dispatch(updateIsGameLocked(isLocked)),
+  selectGameMode: mode => dispatch(selectGameMode(mode)),
+  resetHistory: () => dispatch(resetHistory),
+  resetSortAsc: () => dispatch(resetSortAsc),
+  resetSymbol: () => dispatch(resetSymbol),
+  resetStepNumber: () => dispatch(resetStepNumber),
+  resetXIsNext: () => dispatch(resetXIsNext)
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
@@ -311,6 +331,8 @@ const mergeProps = (stateProps, dispatchProps) => {
   const isGameDraw = squares => isDraw(squares);
   const handleLogout = () => onLogout(dispatchProps);
   const computerMove = () => makeMove(stateProps, dispatchProps);
+  const handleSelectGameMode = mode => dispatchProps.selectGameMode(mode);
+  const reset = () => resetGame(dispatchProps);
 
   return {
     ...stateProps,
@@ -323,7 +345,9 @@ const mergeProps = (stateProps, dispatchProps) => {
     updateSquareSymbol,
     isGameDraw,
     handleLogout,
-    computerMove
+    computerMove,
+    handleSelectGameMode,
+    reset
   };
 };
 

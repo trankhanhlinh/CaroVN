@@ -17,8 +17,33 @@ import {
   REQUEST_UPDATE_USER_INFO,
   RESPONSE_UPDATE_USER_INFO,
   RESPONSE_UPDATE_USER_PASSWORD,
-  LOGOUT
+  LOGOUT,
+  RESET_SORTASC,
+  RESET_HISTORY,
+  RESET_STEPNUMBER,
+  RESET_XISNEXT,
+  RESET_SYMBOL
 } from './type';
+
+export const resetSortAsc = () => ({
+  type: RESET_SORTASC
+});
+
+export const resetSymbol = () => ({
+  type: RESET_SYMBOL
+});
+
+export const resetXIsNext = () => ({
+  type: RESET_XISNEXT
+});
+
+export const resetStepNumber = () => ({
+  type: RESET_STEPNUMBER
+});
+
+export const resetHistory = () => ({
+  type: RESET_HISTORY
+});
 
 export const selectGameMode = mode => ({
   type: SELECT_GAME_MODE,

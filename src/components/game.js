@@ -8,35 +8,45 @@ import { gameSquaresSize } from '../minimax/gameSquares';
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.socket = io('https://restfulapi-passport-jwt.herokuapp.com');
+    this.gameMode = localStorage.getItem('mode');
+    if (this.gameMode === 'friend') {
+      this.socket = io('https://restfulapi-passport-jwt.herokuapp.com');
+    }
   }
 
   componentDidMount() {
-    this.socket.connect();
-    const { updateSquareSymbol, updateYourTurn, handleClick } = this.props;
-    // Set up the initial state when the game begins
-    this.socket.on('game.begin', data => {
-      console.log('game begin');
-      // The server will asign X or O to the player
-      updateSquareSymbol(data.symbol);
-      // Give X the first turn
-      updateYourTurn(data.symbol === 'X');
-      document.getElementById('status').innerHTML =
-        data.symbol === 'X' ? 'Your turn' : "Your opponent's turn";
-    });
-    // Event is called when either player makes a move
-    this.socket.on('move.made', data => {
-      handleClick(data);
-    });
-    // Disable the board if the opponent leaves
-    this.socket.on('opponent.left', () => {
-      document.getElementById('status').innerHTML =
-        'Your opponent left the game.';
-    });
+    const { handleSelectGameMode, reset } = this.props;
+    reset();
+    handleSelectGameMode(this.gameMode);
+    if (this.gameMode === 'friend') {
+      this.socket.connect();
+      const { updateSquareSymbol, updateYourTurn, handleClick } = this.props;
+      // Set up the initial state when the game begins
+      this.socket.on('game.begin', data => {
+        console.log('game begin');
+        // The server will asign X or O to the player
+        updateSquareSymbol(data.symbol);
+        // Give X the first turn
+        updateYourTurn(data.symbol === 'X');
+        document.getElementById('status').innerHTML =
+          data.symbol === 'X' ? 'Your turn' : "Your opponent's turn";
+      });
+      // Event is called when either player makes a move
+      this.socket.on('move.made', data => {
+        handleClick(data);
+      });
+      // Disable the board if the opponent leaves
+      this.socket.on('opponent.left', () => {
+        document.getElementById('status').innerHTML =
+          'Your opponent left the game.';
+      });
+    }
   }
 
   componentWillUnmount() {
-    this.socket.disconnect();
+    if (this.gameMode === 'friend') {
+      this.socket.disconnect();
+    }
   }
 
   render() {
@@ -47,7 +57,6 @@ class Game extends React.Component {
       symbol,
       sortAsc,
       currentUser,
-      gameMode,
       handleClick,
       jumpTo,
       calculateWinner,
@@ -92,7 +101,7 @@ class Game extends React.Component {
     //   }
     // };
     const handleClickSquare = position => {
-      if (gameMode.mode === 'friend') {
+      if (this.gameMode === 'friend') {
         if (
           current.squares[position] ||
           isGameDraw(current.squares) ||
@@ -144,7 +153,7 @@ class Game extends React.Component {
       status = `Game over. ${xIsNext ? 'You lost.' : 'You won!'}`;
     } else if (isDraw) {
       status = 'Game is draw';
-    } else if (gameMode.mode === 'friend') {
+    } else if (this.gameMode === 'friend') {
       status = 'Waiting for opponent to join...';
     } else {
       status = `Next player: ${xIsNext ? 'X' : 'O'}`;
@@ -205,10 +214,6 @@ Game.propTypes = {
   xIsNext: PropTypes.bool.isRequired,
   symbol: PropTypes.string.isRequired,
   sortAsc: PropTypes.bool.isRequired,
-  gameMode: PropTypes.shape({
-    mode: PropTypes.string.isRequired,
-    isLocked: PropTypes.bool.isRequired
-  }).isRequired,
   handleClick: PropTypes.func.isRequired,
   jumpTo: PropTypes.func.isRequired,
   calculateWinner: PropTypes.func.isRequired,
@@ -225,7 +230,9 @@ Game.propTypes = {
     avatar: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired
   }).isRequired,
-  handleLogout: PropTypes.func.isRequired
+  handleLogout: PropTypes.func.isRequired,
+  handleSelectGameMode: PropTypes.func.isRequired,
+  reset: PropTypes.func.isRequired
   // computerMove: PropTypes.func.isRequired
 };
 

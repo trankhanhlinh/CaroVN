@@ -1,4 +1,4 @@
-import { ADD_HISTORY } from '../actions/type';
+import { ADD_HISTORY, RESET_HISTORY } from '../actions/type';
 
 const history = (
   state = [
@@ -17,6 +17,13 @@ const history = (
           pos: action.pos
         }
       ]);
+    case RESET_HISTORY:
+      return [
+        {
+          squares: Array(400).fill(null),
+          pos: -1
+        }
+      ];
     default:
       return state;
   }

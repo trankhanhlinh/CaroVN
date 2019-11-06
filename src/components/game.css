@@ -161,3 +161,47 @@ body {
 .square:focus {
   outline: none;
 }
+
+.card {
+  margin: auto;
+  padding: 3em;
+  width: 30em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group .avatar {
+  height: 8em;
+  width: 8em;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.form-group .avatar img {
+  height: 100%;
+  width: 100%;
+  transform: scale(1.03);
+  transition: transform 800ms ease;
+}
+
+.form-group img:hover {
+  transform: scale(1);
+}
+
+.form-label {
+  font-size: 1em;
+}
+
+.form-control {
+  font-size: 1.2em;
+}
+
+.btn {
+  text-align: center;
+  font-size: 1.2em;
+}
