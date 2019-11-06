@@ -11,6 +11,7 @@ import Login from '../containers/login';
 import Register from '../containers/register';
 import Game from '../containers/game';
 import PersonalPage from '../containers/personalPage';
+import ChangePassword from '../containers/changePassword';
 import Home from '../containers/home';
 
 export default function App({ currentUser, onAuthenticate }) {
@@ -53,6 +54,13 @@ export default function App({ currentUser, onAuthenticate }) {
             onAuthenticate={onAuthenticate}
           >
             <PersonalPage />
+          </PrivateRoute>
+          <PrivateRoute
+            path="/change-password"
+            currentUser={currentUser}
+            onAuthenticate={onAuthenticate}
+          >
+            <ChangePassword />
           </PrivateRoute>
           {/* <Route path="/login">
             <Login />

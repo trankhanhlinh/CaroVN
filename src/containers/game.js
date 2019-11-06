@@ -19,7 +19,6 @@ import {
   updateSymbol,
   toggleSortAsc,
   logout,
-  selectGameMode,
   updateIsGameLocked
 } from '../actions';
 
@@ -278,10 +277,6 @@ const onLogout = dispatchProps => {
   dispatchProps.logout();
 };
 
-const onSelectGameMode = (mode, dispatchProps) => {
-  dispatchProps.selectGameMode(mode);
-};
-
 const mapStateToProps = state => ({
   history: state.history,
   stepNumber: state.stepNumber,
@@ -300,7 +295,6 @@ const mapDispatchToProps = dispatch => ({
   updateSymbol: symbol => dispatch(updateSymbol(symbol)),
   toggleSortAsc: sortAsc => dispatch(toggleSortAsc(sortAsc)),
   logout: () => dispatch(logout()),
-  selectGameMode: mode => dispatch(selectGameMode(mode)),
   updateIsGameLocked: isLocked => dispatch(updateIsGameLocked(isLocked))
 });
 
@@ -316,7 +310,6 @@ const mergeProps = (stateProps, dispatchProps) => {
   const updateSquareSymbol = symbol => dispatchProps.updateSymbol(symbol);
   const isGameDraw = squares => isDraw(squares);
   const handleLogout = () => onLogout(dispatchProps);
-  const handleSelectGameMode = mode => onSelectGameMode(mode, dispatchProps);
   const computerMove = () => makeMove(stateProps, dispatchProps);
 
   return {
@@ -330,7 +323,6 @@ const mergeProps = (stateProps, dispatchProps) => {
     updateSquareSymbol,
     isGameDraw,
     handleLogout,
-    handleSelectGameMode,
     computerMove
   };
 };

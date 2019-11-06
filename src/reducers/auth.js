@@ -8,6 +8,7 @@ import {
   UPDATE_CUR_USER,
   REQUEST_UPDATE_USER_INFO,
   RESPONSE_UPDATE_USER_INFO,
+  RESPONSE_UPDATE_USER_PASSWORD,
   LOGOUT
 } from '../actions/type';
 
@@ -114,6 +115,16 @@ export default (state = DEFAULT_STATE, action) => {
           lastName: action.lastName,
           email: action.email,
           avatar: action.avatar ? action.avatar : state.currentUser.avatar
+        }
+      };
+    case RESPONSE_UPDATE_USER_PASSWORD:
+      console.log('[RESPONSE_UPDATE_USER_PASSWORD] state ', state);
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          isPending: false,
+          password: action.password
         }
       };
     case LOGIN_ERROR:

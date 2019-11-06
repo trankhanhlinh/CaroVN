@@ -1,37 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
 import io from 'socket.io-client';
 import Board from './board';
 import Header from './header';
 import { gameSquaresSize } from '../minimax/gameSquares';
 
-const socket = io('https://restfulapi-passport-jwt.herokuapp.com/');
-
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.socket = io('https://restfulapi-passport-jwt.herokuapp.com');
+  }
+
+  componentDidMount() {
+    this.socket.connect();
     const { updateSquareSymbol, updateYourTurn, handleClick } = this.props;
     // Set up the initial state when the game begins
-    socket.on('game.begin', data => {
+    this.socket.on('game.begin', data => {
+      console.log('game begin');
       // The server will asign X or O to the player
       updateSquareSymbol(data.symbol);
       // Give X the first turn
       updateYourTurn(data.symbol === 'X');
-      document
-        .getElementsByClassName('status')
-        .text(`${data.symbol === 'X' ? 'Your turn' : "Your opponent's turn"}`);
+      document.getElementById('status').innerHTML =
+        data.symbol === 'X' ? 'Your turn' : "Your opponent's turn";
     });
     // Event is called when either player makes a move
-    socket.on('move.made', data => {
+    this.socket.on('move.made', data => {
       handleClick(data);
     });
     // Disable the board if the opponent leaves
-    socket.on('opponent.left', () => {
-      document
-        .getElementsByClassName('status')
-        .text('Your opponent left the game.');
+    this.socket.on('opponent.left', () => {
+      document.getElementById('status').innerHTML =
+        'Your opponent left the game.';
     });
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
 
   render() {
@@ -48,8 +53,7 @@ class Game extends React.Component {
       calculateWinner,
       isGameDraw,
       sort,
-      handleLogout,
-      handleSelectGameMode
+      handleLogout
     } = this.props;
     // if (gameMode.mode === 'friend') {
     //   // Set up the initial state when the game begins
@@ -103,7 +107,7 @@ class Game extends React.Component {
         }
 
         // Emit the move to the server
-        socket.emit('make.move', {
+        this.socket.emit('make.move', {
           symbol,
           position
         });
@@ -159,19 +163,8 @@ class Game extends React.Component {
             />
           </div>
           <div className="game-info">
-            <Button
-              variant="warning"
-              onClick={() => handleSelectGameMode('computer')}
-            >
-              Play with computer
-            </Button>
-            <Button
-              variant="success"
-              onClick={() => handleSelectGameMode('friend')}
-            >
-              Play with a friend
-            </Button>
             <div
+              id="status"
               className="status"
               style={{ color: winner ? 'red' : '#00a3af' }}
             >
@@ -232,8 +225,7 @@ Game.propTypes = {
     avatar: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired
   }).isRequired,
-  handleLogout: PropTypes.func.isRequired,
-  handleSelectGameMode: PropTypes.func.isRequired
+  handleLogout: PropTypes.func.isRequired
   // computerMove: PropTypes.func.isRequired
 };
 
