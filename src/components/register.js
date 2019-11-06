@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Col } from 'react-bootstrap';
 import Loading from './loadingIcon/loading';
 import './form.css';
 
@@ -21,6 +21,38 @@ function Register({ registerUser, errorMessage, onSubmit }) {
           placeholder="Enter username"
         />
       </Form.Group>
+
+      <Form.Group controlId="formBasicEmail">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          type="text"
+          name="email"
+          placeholder="Enter email"
+          required
+        />
+      </Form.Group>
+
+      <Form.Row>
+        <Form.Group as={Col} controlId="formBasicFirstName">
+          <Form.Label>First name</Form.Label>
+          <Form.Control
+            type="text"
+            name="firstName"
+            placeholder="Enter first name"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} controlId="formBasicLastName">
+          <Form.Label>Last name</Form.Label>
+          <Form.Control
+            type="text"
+            name="lastName"
+            placeholder="Enter last name"
+            required
+          />
+        </Form.Group>
+      </Form.Row>
 
       <Form.Group controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>

@@ -17,7 +17,10 @@ const handleOnSubmit = (event, dispatch) => {
   const form = event.target;
   const newUser = {
     USERNAME: form.elements.username.value,
-    PASSWORD: form.elements.password.value
+    PASSWORD: form.elements.password.value,
+    EMAIL: form.elements.email.value,
+    FIRSTNAME: form.elements.firstName.value,
+    LASTNAME: form.elements.lastName.value
   };
 
   registerUsername = newUser.USERNAME;

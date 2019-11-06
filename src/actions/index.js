@@ -80,7 +80,7 @@ export function register(newUser) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `USERNAME=${newUser.USERNAME}&PASSWORD=${newUser.PASSWORD}`
+        body: `USERNAME=${newUser.USERNAME}&PASSWORD=${newUser.PASSWORD}&FIRSTNAME=${newUser.FIRSTNAME}&LASTNAME=${newUser.LASTNAME}&EMAIL=${newUser.EMAIL}`
       }
     )
       .then(response => response.json())
@@ -91,7 +91,7 @@ export function register(newUser) {
             payload: json.error.message
           });
         } else {
-          dispatch(responseRegister(newUser.USERNAME));
+          dispatch(responseRegister(json.username));
         }
       })
       .catch();
