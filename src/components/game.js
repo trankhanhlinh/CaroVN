@@ -6,7 +6,7 @@ import Board from './board';
 import Header from './header';
 import { gameSquaresSize } from '../minimax/gameSquares';
 
-const socket = io('https://restfulapi-passport-jwt.herokuapp.com:8080');
+const socket = io('https://restfulapi-passport-jwt.herokuapp.com');
 
 class Game extends React.Component {
   constructor(props) {
