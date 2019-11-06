@@ -6,14 +6,17 @@ import Board from './board';
 import Header from './header';
 import { gameSquaresSize } from '../minimax/gameSquares';
 
-const socket = io('https://restfulapi-passport-jwt.herokuapp.com');
-
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.socket = io('https://restfulapi-passport-jwt.herokuapp.com');
+  }
+
+  componentDidMount() {
+    this.socket.connect();
     const { updateSquareSymbol, updateYourTurn, handleClick } = this.props;
     // Set up the initial state when the game begins
-    socket.on('game.begin', data => {
+    this.socket.on('game.begin', data => {
       // The server will asign X or O to the player
       updateSquareSymbol(data.symbol);
       // Give X the first turn
@@ -22,14 +25,18 @@ class Game extends React.Component {
         data.symbol === 'X' ? 'Your turn' : "Your opponent's turn";
     });
     // Event is called when either player makes a move
-    socket.on('move.made', data => {
+    this.socket.on('move.made', data => {
       handleClick(data);
     });
     // Disable the board if the opponent leaves
-    socket.on('opponent.left', () => {
+    this.socket.on('opponent.left', () => {
       document.getElementById('status').innerHTML =
         'Your opponent left the game.';
     });
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
 
   render() {
@@ -101,7 +108,7 @@ class Game extends React.Component {
         }
 
         // Emit the move to the server
-        socket.emit('make.move', {
+        this.socket.emit('make.move', {
           symbol,
           position
         });
