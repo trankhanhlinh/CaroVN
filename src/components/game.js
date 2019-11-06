@@ -33,6 +33,8 @@ class Game extends React.Component {
       });
       // Event is called when either player makes a move
       this.socket.on('move.made', data => {
+        document.getElementById('status').innerHTML =
+          data.symbol === 'X' ? 'Your turn' : "Your opponent's turn";
         handleClick(data);
       });
       // Disable the board if the opponent leaves
